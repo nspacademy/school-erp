@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>North South Pre-Cadet Academy ERP</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cadetNavy: '#0c2340',
+            cadetGreen: '#004d26',
+            cadetGold: '#e6a117',
+            cadetLight: '#f8fafc'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 antialiased h-screen overflow-hidden flex flex-col">
+
+  <!-- ================= AUTHENTICATION MODAL / SCREEN ================= -->
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-950 via-cadetNavy to-emerald-950 p-4">
+    <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 w-full max-w-md p-7 relative overflow-hidden">
+      
+      <!-- Login View -->
+      <div id="login-box">
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border-2 border-amber-400 flex items-center justify-center shadow-lg mb-2">
+            <span class="text-amber-400 font-black text-xl tracking-wider">NS</span>
+          </div>
+          <h1 class="text-lg font-black text-slate-900 uppercase">North South</h1>
+          <p class="text-xs font-semibold text-emerald-800 tracking-wider">PRE-CADET ACADEMY</p>
+          <p class="text-[10px] text-slate-500">Discipline • Leadership • Excellence[span_0](start_span)[span_0](end_span)</p>
+        </div>
+
+        <form id="login-form" onsubmit="handleAuthLogin(event)" class="mt-5 space-y-3.5 text-xs">
+          <div id="login-error" class="hidden p-2 bg-red-50 text-red-700 border border-red-200 rounded text-center font-medium"></div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Username or Email</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user-shield"></i></span>
+              <input type="text" id="auth-user" required placeholder="admin / teacher" class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="font-bold text-slate-700">Password</label>
+              <button type="button" onclick="showResetBox(true)" class="text-[11px] text-emerald-700 hover:underline font-semibold">Forgot Password?</button>
+            </div>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
+              <input type="password" id="auth-pass" required placeholder="••••••••" class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold tracking-wide shadow flex items-center justify-center gap-2">
+            <i class="fa-solid fa-right-to-bracket"></i> Login to System
+          </button>
+        </form>
+
+        <div class="mt-4 border-t pt-3 text-center text-[11px] text-slate-500 space-y-0.5">
+          <p>Admin: <span class="font-semibold text-slate-800">admin / admin123</span> (Full Control)</p>
+          <p>Teacher: <span class="font-semibold text-slate-800">teacher / teacher123</span> (Limited)</p>
+        </div>
+      </div>
+
+      <!-- Password Reset View -->
+      <div id="reset-box" class="hidden text-xs">
+        <div class="text-center mb-4">
+          <h2 class="text-base font-bold text-slate-800">Password Reset Request</h2>
+          <p class="text-[11px] text-slate-500">Enter your registered email address to receive password reset PIN</p>
+        </div>
+        <form onsubmit="handlePasswordReset(event)" class="space-y-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Registered Email Address</label>
+            <input type="email" id="reset-email" required placeholder="admin@northsouthacademy.edu.bd" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+          <button type="submit" class="w-full py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold">
+            Send Reset OTP & Instructions
+          </button>
+          <button type="button" onclick="showResetBox(false)" class="w-full py-1.5 text-slate-600 hover:underline">
+            Back to Login
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MAIN APP WORKSPACE ================= -->
+  <div id="app-workspace" class="hidden flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-slate-950 text-slate-300 flex flex-col justify-between hidden md:flex border-r border-slate-800 shrink-0">
+      <div>
+        <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-slate-900 border border-amber-400 flex items-center justify-center font-bold text-amber-400">
+            NS
+          </div>
+          <div class="overflow-hidden">
+            <h2 class="text-xs font-black text-white uppercase truncate">North South Academy[span_1](start_span)[span_1](end_span)</h2>
+            <p class="text-[10px] text-emerald-400 font-semibold truncate"><i class="fa-solid fa-location-dot"></i> Rouha Bazar, Sarishabari[span_2](start_span)[span_2](end_span)</p>
+          </div>
+        </div>
+
+        <nav class="p-3 space-y-1.5 text-xs">
+          <button onclick="navigateView('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-emerald-800 text-white font-semibold transition">
+            <i class="fa-solid fa-chart-line w-4"></i> Dashboard
+          </button>
+          <button onclick="navigateView('students')" id="nav-students" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-user-graduate w-4"></i> Cadet Database
+          </button>
+          <button onclick="navigateView('attendance')" id="nav-attendance" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-clipboard-user w-4"></i> Daily Attendance
+          </button>
+          <button onclick="navigateView('fees')" id="nav-fees" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-bangladeshi-taka-sign w-4"></i> Fees & Billing
+          </button>
+          <button onclick="navigateView('idcards')" id="nav-idcards" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-id-card-clip w-4"></i> Cadet ID Card
+          </button>
+        </nav>
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/70 flex items-center justify-between text-xs">
+        <div>
+          <span id="current-user-name" class="font-bold text-white block">Administrator</span>
+          <span id="current-user-role" class="text-[10px] text-emerald-400 font-semibold uppercase">Super Admin</span>
+        </div>
+        <button onclick="logoutSession()" title="Logout" class="p-2 bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition">
+          <i class="fa-solid fa-power-off"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Content Engine -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+      
+      <!-- Top Bar -->
+      <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm shrink-0">
+        <div class="flex items-center gap-2">
+          <h2 id="top-title" class="font-bold text-slate-800 text-base">Executive Dashboard</h2>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Session 2026-27</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex text-right flex-col text-[11px] text-slate-500">
+            <span>Official Helpline: +880 1742-955450[span_3](start_span)[span_3](end_span)</span>
+            <span class="text-emerald-700 font-bold">WhatsApp Billing Alert: Active</span>
+          </div>
+          <button onclick="logoutSession()" class="md:hidden text-xs bg-red-100 text-red-600 p-2 rounded-md font-bold">
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Body -->
+      <main class="flex-1 p-6 overflow-y-auto custom-scroll bg-slate-50">
+
+        <!-- 1. DASHBOARD -->
+        <section id="view-dashboard" class="space-y-6">
+          <div class="bg-gradient-to-r from-slate-950 via-cadetNavy to-emerald-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div class="relative z-10">
+              <span class="bg-amber-400/20 text-amber-300 text-xs px-2.5 py-0.5 rounded font-bold border border-amber-400/30 uppercase">
+                Military Style Discipline & Excellence[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+              </span>
+              <h2 class="text-2xl font-black mt-2">North South Pre-Cadet Academy[span_6](start_span)[span_6](end_span)</h2>
+              <p class="text-xs text-slate-300 mt-1">Rouha Bazar, Sarishabari, Jamalpur, Bangladesh, 2050[span_7](start_span)[span_7](end_span)</p>
+            </div>
+          </div>
+
+          <!-- Quick Metrics -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-500 font-semibold uppercase">Total Cadets</p>
+                <h3 id="stat-cadets" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+              </div>
+              <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                <i class="fa-solid fa-user-graduate"></i>
+              </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-500 font-semibold uppercase">Today Attendance</p>
+                <h3 id="stat-att-rate" class="text-2xl font-bold text-emerald-600 mt-1">0%</h3>
+              </div>
+              <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                <i class="fa-solid fa-user-check"></i>
+              </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-500 font-semibold uppercase">Total Billing Revenue</p>
+                <h3 id="stat-fees-collected" class="text-2xl font-bold text-amber-600 mt-1">৳ 0</h3>
+              </div>
+              <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                <i class="fa-solid fa-money-bill-wave"></i>
+              </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-500 font-semibold uppercase">Admin Clearance</p>
+                <h3 id="stat-role-status" class="text-2xl font-bold text-purple-600 mt-1">Active</h3>
+              </div>
+              <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl">
+                <i class="fa-solid fa-key"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Graph -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
+              <span>Operational Growth & Cash-Flow</span>
+              <span class="text-xs text-slate-400 font-normal">Real-Time Data Feed</span>
+            </h3>
+            <div class="h-64">
+              <canvas id="analyticsChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. CADETS / STUDENTS CRUD (ADMIN ONLY EDIT/DELETE) -->
+        <section id="view-students" class="hidden space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <input type="text" id="cadet-search" oninput="renderStudentTable()" placeholder="Search cadet name, roll, phone..." class="text-xs border rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-emerald-700">
+              <button onclick="exportStudentsCSV()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-3 py-2 rounded-lg font-bold">
+                <i class="fa-solid fa-download"></i> Export CSV
+              </button>
+            </div>
+            <button id="btn-add-cadet" onclick="openStudentModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+              <i class="fa-solid fa-user-plus"></i> Enroll New Cadet
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Cadet ID</th>
+                  <th class="px-4 py-3">Full Name</th>
+                  <th class="px-4 py-3">Class</th>
+                  <th class="px-4 py-3">Blood Group</th>
+                  <th class="px-4 py-3">Guardian Phone</th>
+                  <th class="px-4 py-3 text-center">Action Controls</th>
+                </tr>
+              </thead>
+              <tbody id="student-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. ATTENDANCE -->
+        <section id="view-attendance" class="hidden space-y-4">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Parade & Daily Attendance Log</h3>
+              <p class="text-xs text-slate-500">Record attendance for today's drill</p>
+            </div>
+            <button onclick="commitAttendance()" class="bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-emerald-800">
+              <i class="fa-solid fa-check-double"></i> Save & Log Attendance
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                <tr>
+                  <th class="px-4 py-3">Roll ID</th>
+                  <th class="px-4 py-3">Cadet Name</th>
+                  <th class="px-4 py-3">Class</th>
+                  <th class="px-4 py-3 text-center">Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 4. FEES & ACCOUNTS (WITH WHATSAPP DISPATCH) -->
+        <section id="view-fees" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-xs">
+              <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-2">Receive Student Fees</h4>
+              <p class="text-[11px] text-emerald-700 mb-3 font-semibold"><i class="fa-brands fa-whatsapp text-emerald-600"></i> Auto alert will be sent to WhatsApp (+8801689333000)</p>
+              
+              <form id="billing-form" onsubmit="handleFeePayment(event)" class="space-y-3">
+                <div>
+                  <label class="block font-semibold mb-1">Select Cadet</label>
+                  <select id="bill-student" class="w-full border rounded-lg p-2" required></select>
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Fee Purpose</label>
+                  <select id="bill-reason" class="w-full border rounded-lg p-2">
+                    <option>Monthly Tuition Fee</option>
+                    <option>New Cadet Admission Fee</option>
+                    <option>Term Exam Fee</option>
+                    <option>Cadet Uniform & Badges</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Amount (BDT)</label>
+                  <input type="number" id="bill-amount" placeholder="৳ 1500" required class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Payment Method</label>
+                  <select id="bill-method" class="w-full border rounded-lg p-2">
+                    <option>Cash Counter</option>
+                    <option>bKash</option>
+                    <option>Nagad</option>
+                  </select>
+                </div>
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg mt-2 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-receipt"></i> Accept & Send WhatsApp Alert
+                </button>
+              </form>
+            </div>
+
+            <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-xs">
+              <h4 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2">Recent Transactions</h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                    <tr>
+                      <th class="px-3 py-2">TxID</th>
+                      <th class="px-3 py-2">Cadet</th>
+                      <th class="px-3 py-2">Purpose</th>
+                      <th class="px-3 py-2">Channel</th>
+                      <th class="px-3 py-2 text-right">Amount</th>
+                      <th class="px-3 py-2 text-center">Alert Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tx-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. ID CARDS -->
+        <section id="view-idcards" class="hidden space-y-4">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Official Cadet Identity Badge</h3>
+              <p class="text-xs text-slate-500">Official printable ID format</p>
+            </div>
+            <button onclick="window.print()" class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg font-bold">
+              <i class="fa-solid fa-print"></i> Print Badge
+            </button>
+          </div>
+
+          <div id="print-area" class="flex justify-center p-6">
+            <div class="w-80 bg-white rounded-2xl shadow-xl border-2 border-slate-300 overflow-hidden text-center relative p-5">
+              <div class="bg-gradient-to-r from-emerald-900 to-slate-950 -mx-5 -mt-5 p-4 text-white border-b-4 border-amber-400">
+                <h4 class="font-black text-sm uppercase">North South Pre-Cadet Academy[span_8](start_span)[span_8](end_span)</h4>
+                <p class="text-[9px] text-amber-300">Rouha Bazar, Sarishabari, Jamalpur[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)</p>
+              </div>
+
+              <div class="my-4">
+                <div class="w-24 h-24 mx-auto rounded-full bg-slate-100 border-2 border-emerald-700 flex items-center justify-center overflow-hidden">
+                  <i class="fa-solid fa-user-tie text-4xl text-slate-400"></i>
+                </div>
+                <h3 class="font-black text-base text-slate-900 mt-2" id="idcard-name">Cadet Name</h3>
+                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Grade 5</span>
+              </div>
+
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left text-xs space-y-1.5">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Cadet ID:</span>
+                  <span class="font-bold text-slate-800" id="idcard-id">#NS-101</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Blood Group:</span>
+                  <span class="font-bold text-red-600" id="idcard-blood">O+</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Guardian Contact:</span>
+                  <span class="font-bold text-slate-800" id="idcard-phone">01742-955450[span_11](start_span)[span_11](end_span)</span>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3 border-t text-[9px] text-slate-400 flex justify-between items-center">
+                <span>Discipline • Leadership • Excellence[span_12](start_span)[span_12](end_span)</span>
+                <span class="font-bold text-slate-700">Principal Signature</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- CADET ADD / EDIT MODAL (ADMIN CONTROL) -->
+  <div id="modal-cadet" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4 border-b pb-2">
+        <h3 id="modal-cadet-title" class="font-bold text-slate-800 text-sm">Enroll New Cadet</h3>
+        <button onclick="toggleModal('modal-cadet')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="cadet-form" onsubmit="handleCadetFormSubmit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-cadet-id">
+        <div>
+          <label class="block font-semibold mb-1">Cadet Full Name</label>
+          <input type="text" id="form-cadet-name" required class="w-full border rounded-lg p-2" placeholder="e.g. Shakib Al Hasan">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Class / Grade</label>
+            <select id="form-cadet-class" class="w-full border rounded-lg p-2">
+              <option>Play</option>
+              <option>Nursery</option>
+              <option>Class 1</option>
+              <option>Class 2</option>
+              <option>Class 3</option>
+              <option>Class 4</option>
+              <option>Class 5</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Blood Group</label>
+            <input type="text" id="form-cadet-blood" class="w-full border rounded-lg p-2" placeholder="e.g. B+">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Guardian Phone (BD 11-Digit)</label>
+          <input type="tel" id="form-cadet-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
+        </div>
+        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-lg mt-2">
+          Save Cadet Record
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    const NOTIFICATION_WHATSAPP = "+8801689333000";
+
+    const DEFAULT_DATA = {
+      students: [
+        { id: 101, name: "Tanvir Ahmed", class: "Class 5", phone: "01742-955450", blood: "O+", present: true },
+        { id: 102, name: "Maria Sultana", class: "Class 4", phone: "01819-223344", blood: "A+", present: true },
+        { id: 103, name: "Rayhan Kabir", class: "Class 3", phone: "01912-334455", blood: "B+", present: false },
+        { id: 104, name: "Sadia Islam", class: "Class 2", phone: "01622-445566", blood: "AB+", present: true }
+      ],
+      transactions: [
+        { id: "TX1001", student: "Tanvir Ahmed", reason: "Monthly Tuition Fee", method: "bKash", amount: 1500, date: "2026-10-20" },
+        { id: "TX1002", student: "Maria Sultana", reason: "Monthly Tuition Fee", method: "Cash Counter", amount: 1500, date: "2026-10-21" }
+      ]
+    };
+
+    let appState = JSON.parse(localStorage.getItem('north_south_db')) || DEFAULT_DATA;
+    let currentUser = JSON.parse(localStorage.getItem('north_south_user')) || null;
+    let analyticsChartInstance = null;
+
+    function saveState() {
+      localStorage.setItem('north_south_db', JSON.stringify(appState));
+      updateDashboardStats();
+    }
+
+    // Auth & Password Reset
+    function handleAuthLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('auth-user').value.trim();
+      const p = document.getElementById('auth-pass').value.trim();
+      const err = document.getElementById('login-error');
+
+      if (u === 'admin' && p === 'admin123') {
+        currentUser = { username: 'Administrator', role: 'admin' };
+      } else if (u === 'teacher' && p === 'teacher123') {
+        currentUser = { username: 'Faculty Teacher', role: 'teacher' };
+      } else {
+        err.innerText = "Invalid Username or Password!";
+        err.classList.remove('hidden');
+        return;
+      }
+
+      localStorage.setItem('north_south_user', JSON.stringify(currentUser));
+      initAppView();
+    }
+
+    function showResetBox(show) {
+      document.getElementById('login-box').classList.toggle('hidden', show);
+      document.getElementById('reset-box').classList.toggle('hidden', !show);
+    }
+
+    function handlePasswordReset(e) {
+      e.preventDefault();
+      const email = document.getElementById('reset-email').value;
+      alert(`Password reset instructions & secure PIN have been sent to: ${email}`);
+      showResetBox(false);
+    }
+
+    function logoutSession() {
+      localStorage.removeItem('north_south_user');
+      currentUser = null;
+      document.getElementById('app-workspace').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+
+    function initAppView() {
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-workspace').classList.remove('hidden');
+      document.getElementById('current-user-name').innerText = currentUser.username;
+      document.getElementById('current-user-role').innerText = currentUser.role === 'admin' ? 'Super Admin' : 'Staff Teacher';
+      
+      // Role-based visibility
+      const isAdmin = currentUser.role === 'admin';
+      const addBtn = document.getElementById('btn-add-cadet');
+      if (addBtn) addBtn.style.display = isAdmin ? 'flex' : 'none';
+
+      renderStudentTable();
+      renderAttendanceTable();
+      renderTransactions();
+      populateStudentDropdown();
+      updateDashboardStats();
+      initChart();
+    }
+
+    // View Navigation
+    function navigateView(viewName) {
+      const views = ['dashboard', 'students', 'attendance', 'fees', 'idcards'];
+      views.forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        const b = document.getElementById(`nav-${v}`);
+        if(b) {
+          b.classList.remove('bg-emerald-800', 'text-white', 'font-semibold');
+          b.classList.add('text-slate-300');
+        }
+      });
+
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-${viewName}`);
+      if(activeBtn) {
+        activeBtn.classList.add('bg-emerald-800', 'text-white', 'font-semibold');
+        activeBtn.classList.remove('text-slate-300');
+      }
+
+      const titles = {
+        dashboard: "Executive Dashboard",
+        students: "Cadet Enrolled Database",
+        attendance: "Daily Drill & Class Attendance",
+        fees: "Tuition & Accounts Management",
+        idcards: "Cadet Identity Card"
+      };
+      document.getElementById('top-title').innerText = titles[viewName];
+    }
+
+    function toggleModal(id) {
+      document.getElementById(id).classList.toggle('hidden');
+    }
+
+    // Cadet CRUD Logic
+    function renderStudentTable() {
+      const query = (document.getElementById('cadet-search')?.value || '').toLowerCase();
+      const tbody = document.getElementById('student-tbody');
+      tbody.innerHTML = '';
+      const isAdmin = currentUser && currentUser.role === 'admin';
+
+      const filtered = appState.students.filter(s => 
+        s.name.toLowerCase().includes(query) || s.id.toString().includes(query) || s.phone.includes(query)
+      );
+
+      filtered.forEach(s => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition border-b">
+            <td class="px-4 py-3 font-bold text-slate-800">#NS-${s.id}</td>
+            <td class="px-4 py-3 font-semibold text-slate-900">${s.name}</td>
+            <td class="px-4 py-3"><span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold">${s.class}</span></td>
+            <td class="px-4 py-3 font-bold text-red-600">${s.blood}</td>
+            <td class="px-4 py-3">${s.phone}</td>
+            <td class="px-4 py-3 text-center space-x-1">
+              <button onclick="previewIDCard(${s.id})" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded" title="View ID">Card</button>
+              ${isAdmin ? `
+                <button onclick="editCadet(${s.id})" class="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteCadet(${s.id})" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 px-2 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i></button>
+              ` : ''}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function openStudentModal() {
+      document.getElementById('modal-cadet-title').innerText = 'Enroll New Cadet';
+      document.getElementById('edit-cadet-id').value = '';
+      document.getElementById('cadet-form').reset();
+      toggleModal('modal-cadet');
+    }
+
+    function editCadet(id) {
+      const s = appState.students.find(item => item.id === id);
+      if (!s) return;
+      document.getElementById('modal-cadet-title').innerText = `Edit Cadet (#NS-${s.id})`;
+      document.getElementById('edit-cadet-id').value = s.id;
+      document.getElementById('form-cadet-name').value = s.name;
+      document.getElementById('form-cadet-class').value = s.class;
+      document.getElementById('form-cadet-blood').value = s.blood;
+      document.getElementById('form-cadet-phone').value = s.phone;
+      toggleModal('modal-cadet');
+    }
+
+    function deleteCadet(id) {
+      if (confirm(`Are you sure you want to delete Cadet #NS-${id}? This action cannot be reversed.`)) {
+        appState.students = appState.students.filter(s => s.id !== id);
+        saveState();
+        renderStudentTable();
+        renderAttendanceTable();
+        populateStudentDropdown();
+      }
+    }
+
+    function handleCadetFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('edit-cadet-id').value;
+      const name = document.getElementById('form-cadet-name').value;
+      const cadetClass = document.getElementById('form-cadet-class').value;
+      const blood = document.getElementById('form-cadet-blood').value || 'N/A';
+      const phone = document.getElementById('form-cadet-phone').value;
+
+      if (editId) {
+        // Edit existing
+        const target = appState.students.find(s => s.id == editId);
+        if (target) {
+          target.name = name;
+          target.class = cadetClass;
+          target.blood = blood;
+          target.phone = phone;
+        }
+      } else {
+        // Create new
+        const newId = 100 + appState.students.length + 1;
+        appState.students.push({
+          id: newId,
+          name: name,
+          class: cadetClass,
+          blood: blood,
+          phone: phone,
+          present: true
+        });
+      }
+
+      saveState();
+      renderStudentTable();
+      renderAttendanceTable();
+      populateStudentDropdown();
+      toggleModal('modal-cadet');
+    }
+
+    // Attendance
+    function renderAttendanceTable() {
+      const tbody = document.getElementById('attendance-tbody');
+      tbody.innerHTML = '';
+      appState.students.forEach(s => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="px-4 py-3 font-bold">#NS-${s.id}</td>
+            <td class="px-4 py-3 font-medium">${s.name}</td>
+            <td class="px-4 py-3">${s.class}</td>
+            <td class="px-4 py-3 text-center">
+              <input type="checkbox" onchange="togglePresent(${s.id})" ${s.present ? 'checked' : ''} class="w-4 h-4 text-emerald-600 rounded">
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function togglePresent(id) {
+      const target = appState.students.find(s => s.id === id);
+      if(target) target.present = !target.present;
+      saveState();
+    }
+
+    function commitAttendance() {
+      alert("Attendance Saved! Simulated Gateway SMS Dispatched to Guardians.");
+    }
+
+    // Fees & WhatsApp Automatic Trigger
+    function populateStudentDropdown() {
+      const sel = document.getElementById('bill-student');
+      sel.innerHTML = '';
+      appState.students.forEach(s => {
+        sel.innerHTML += `<option value="${s.name}">${s.name} (Class: ${s.class})</option>`;
+      });
+    }
+
+    function handleFeePayment(e) {
+      e.preventDefault();
+      const cadetName = document.getElementById('bill-student').value;
+      const reason = document.getElementById('bill-reason').value;
+      const method = document.getElementById('bill-method').value;
+      const amount = Number(document.getElementById('bill-amount').value);
+      const txId = "TX" + Math.floor(1000 + Math.random() * 9000);
+      const date = new Date().toISOString().split('T')[0];
+
+      const newTx = { id: txId, student: cadetName, reason: reason, method: method, amount: amount, date: date };
+      appState.transactions.unshift(newTx);
+      saveState();
+      renderTransactions();
+      e.target.reset();
+
+      // Trigger WhatsApp API message
+      const textMsg = encodeURIComponent(
+        `[North South Pre-Cadet Academy Billing Alert]\n` +
+        `-----------------------------------------\n` +
+        `TxID: ${txId}\n` +
+        `Cadet: ${cadetName}\n` +
+        `Purpose: ${reason}\n` +
+        `Payment Method: ${method}\n` +
+        `Amount Paid: BDT ${amount}/-\n` +
+        `Status: Paid & Verified\n` +
+        `Date: ${date}\n` +
+        `Campus: Rouha Bazar, Sarishabari[span_13](start_span)[span_13](end_span)`
+      );
+
+      const waURL = `https://api.whatsapp.com/send?phone=${NOTIFICATION_WHATSAPP}&text=${textMsg}`;
+      window.open(waURL, '_blank');
+    }
+
+    function renderTransactions() {
+      const tbody = document.getElementById('tx-tbody');
+      tbody.innerHTML = '';
+      appState.transactions.forEach(t => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="px-3 py-2 font-mono text-slate-500">${t.id}</td>
+            <td class="px-3 py-2 font-bold text-slate-800">${t.student}</td>
+            <td class="px-3 py-2 text-slate-600">${t.reason}</td>
+            <td class="px-3 py-2"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-semibold">${t.method}</span></td>
+            <td class="px-3 py-2 text-right font-bold text-emerald-700">৳ ${t.amount}</td>
+            <td class="px-3 py-2 text-center text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> Sent</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Stats
+    function updateDashboardStats() {
+      const totalStudents = appState.students.length;
+      const presentCount = appState.students.filter(s => s.present).length;
+      const rate = totalStudents ? Math.round((presentCount / totalStudents) * 100) : 0;
+      const totalRev = appState.transactions.reduce((acc, curr) => acc + curr.amount, 0);
+
+      document.getElementById('stat-cadets').innerText = totalStudents;
+      document.getElementById('stat-att-rate').innerText = `${rate}%`;
+      document.getElementById('stat-fees-collected').innerText = `৳ ${totalRev.toLocaleString()}`;
+    }
+
+    // Chart
+    function initChart() {
+      const ctx = document.getElementById('analyticsChart');
+      if(!ctx) return;
+      if(analyticsChartInstance) analyticsChartInstance.destroy();
+
+      analyticsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Today'],
+          datasets: [
+            {
+              label: 'Parade Attendance Rate (%)',
+              data: [82, 88, 85, 92, 96, 100],
+              borderColor: '#059669',
+              tension: 0.35,
+              fill: false
+            },
+            {
+              label: 'Fee Realization (x100 BDT)',
+              data: [20, 35, 25, 45, 65, 80],
+              borderColor: '#e6a117',
+              tension: 0.35,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    }
+
+    // ID Card Preview
+    function previewIDCard(id) {
+      const s = appState.students.find(item => item.id === id);
+      if(!s) return;
+      document.getElementById('idcard-name').innerText = s.name;
+      document.getElementById('idcard-class').innerText = s.class;
+      document.getElementById('idcard-id').innerText = `#NS-${s.id}`;
+      document.getElementById('idcard-blood').innerText = s.blood;
+      document.getElementById('idcard-phone').innerText = s.phone;
+      navigateView('idcards');
+    }
+
+    // Export CSV
+    function exportStudentsCSV() {
+      let csv = 'ID,Name,Class,BloodGroup,Phone\n';
+      appState.students.forEach(s => {
+        csv += `${s.id},"${s.name}","${s.class}","${s.blood}","${s.phone}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', 'cadets_database.csv');
+      a.click();
+    }
+
+    window.onload = () => {
+      if(currentUser) {
+        initAppView();
+      }
+    };
+  </script>
+</body>
+</html>
