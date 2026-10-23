@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- QR Code & Scanner CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 
   <script>
     tailwind.config = {
@@ -27,8 +30,8 @@
   <style>
     @media print {
       body * { visibility: hidden; }
-      #print-area, #print-area *, #result-print-area, #result-print-area * { visibility: visible; }
-      #print-area, #result-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+      #print-area, #print-area *, #result-print-area, #result-print-area *, #certificate-print-area, #certificate-print-area * { visibility: visible; }
+      #print-area, #result-print-area, #certificate-print-area { position: absolute; left: 0; top: 0; width: 100%; }
     }
     .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -95,7 +98,7 @@
         </div>
       </div>
 
-      <!-- Password Reset Box (Request PIN) -->
+      <!-- Password Recovery -->
       <div id="reset-box" class="hidden text-xs">
         <div class="text-center mb-4">
           <h2 class="text-base font-bold text-slate-800">Password Recovery</h2>
@@ -115,7 +118,7 @@
         </form>
       </div>
 
-      <!-- Password Change Verification Box -->
+      <!-- Password Change PIN Box -->
       <div id="new-password-box" class="hidden text-xs space-y-3">
         <div class="text-center mb-2">
           <h2 class="text-base font-bold text-slate-800">Set New Password</h2>
@@ -144,7 +147,7 @@
 
     <!-- Desktop Sidebar -->
     <aside class="w-64 bg-slate-950 text-slate-300 flex flex-col justify-between hidden md:flex border-r border-slate-800 shrink-0">
-      <div>
+      <div class="overflow-y-auto custom-scroll">
         <div class="p-4 border-b border-slate-800 flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-slate-900 border border-amber-400 flex items-center justify-center font-bold text-amber-400">
             NS
@@ -168,11 +171,23 @@
           <button onclick="navigateView('attendance')" id="nav-attendance" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-clipboard-user w-4"></i> Daily Attendance
           </button>
+          <button onclick="navigateView('qrscanner')" id="nav-qrscanner" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-qrcode w-4"></i> Smart QR Scanner
+          </button>
+          <button onclick="navigateView('fitness')" id="nav-fitness" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-person-running w-4"></i> Cadet Fitness & Drill
+          </button>
           <button onclick="navigateView('results')" id="nav-results" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-file-invoice w-4"></i> Exam Results
           </button>
           <button onclick="navigateView('accounts')" id="nav-accounts" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-scale-balanced w-4"></i> Accounts & Payroll
+          </button>
+          <button onclick="navigateView('certificates')" id="nav-certificates" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-certificate w-4"></i> TC & Testimonials
+          </button>
+          <button onclick="navigateView('systemlogs')" id="nav-systemlogs" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-database w-4"></i> Backup & Audit Logs
           </button>
           <button onclick="navigateView('notices')" id="nav-notices" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-bullhorn w-4"></i> Notice Manager
@@ -194,7 +209,7 @@
       </div>
     </aside>
 
-    <!-- Content Workspace -->
+    <!-- Main Workspace Area -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
       
       <!-- Top Action Bar -->
@@ -285,18 +300,18 @@
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between col-span-2 sm:col-span-1">
               <div>
-                <p class="text-[11px] text-slate-500 font-semibold uppercase">Payroll Outflow</p>
-                <h3 id="stat-outflow" class="text-xl font-bold text-red-600 mt-1">৳ 0</h3>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase">Net In-Hand Balance</p>
+                <h3 id="stat-net-balance" class="text-xl font-bold text-emerald-700 mt-1">৳ 0</h3>
               </div>
-              <div class="w-10 h-10 bg-red-50 text-red-600 rounded-lg flex items-center justify-center text-base">
-                <i class="fa-solid fa-money-bill-transfer"></i>
+              <div class="w-10 h-10 bg-emerald-50 text-emerald-700 rounded-lg flex items-center justify-center text-base">
+                <i class="fa-solid fa-vault"></i>
               </div>
             </div>
           </div>
 
           <div class="bg-white p-4 md:p-6 rounded-xl border border-slate-200 shadow-sm">
             <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
-              <span>Financial Inflow vs Outflow Overview</span>
+              <span>Financial Inflow vs Campus Expenses & Salaries</span>
               <span class="text-xs text-slate-400 font-normal">Real-Time Cloud Ledger Feed</span>
             </h3>
             <div class="h-64">
@@ -339,7 +354,7 @@
           </div>
         </section>
 
-        <!-- 3. INSTRUCTORS & STAFF DIRECTORY -->
+        <!-- 3. INSTRUCTORS & STAFF -->
         <section id="view-teachers" class="hidden space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
@@ -415,7 +430,64 @@
           </div>
         </section>
 
-        <!-- 5. RESULTS DATABASE -->
+        <!-- 5. SMART QR CODE ATTENDANCE SCANNER (NEW) -->
+        <section id="view-qrscanner" class="hidden space-y-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="font-bold text-slate-800 text-sm">Smart Gate QR Scanner & Instant Gate Pass</h3>
+            <p class="text-xs text-slate-500">Scan physical ID Badge QR code via mobile camera for instantaneous parade verification.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+              <div id="qr-reader" class="w-full max-w-sm mx-auto overflow-hidden rounded-xl border"></div>
+              <div class="mt-3 flex justify-center gap-2">
+                <button onclick="startQRScanner()" class="bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg font-bold">Start Camera Scanner</button>
+                <button onclick="stopQRScanner()" class="bg-slate-600 text-white text-xs px-4 py-2 rounded-lg font-bold">Stop Scanner</button>
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs space-y-3">
+              <h4 class="font-bold text-slate-800 text-sm border-b pb-2">Last Scanned Cadet Details</h4>
+              <div id="scan-result-card" class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                <p class="text-slate-500">Scan an ID card with the camera to log attendance in real-time...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. CADET FITNESS & DISCIPLINE (NEW) -->
+        <section id="view-fitness" class="hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Pre-Cadet Physical Fitness & Merit Discipline Log</h3>
+              <p class="text-xs text-slate-500">Track drill performance, physical metrics (BMI), and conduct scores</p>
+            </div>
+            <button onclick="openFitnessModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-3 py-2 rounded-lg font-bold">
+              <i class="fa-solid fa-plus"></i> Record Assessment
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                  <tr>
+                    <th class="px-4 py-3">Cadet ID</th>
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Class</th>
+                    <th class="px-4 py-3">Height / Weight</th>
+                    <th class="px-4 py-3">BMI Score</th>
+                    <th class="px-4 py-3">Drill & Parade</th>
+                    <th class="px-4 py-3">Conduct Points</th>
+                  </tr>
+                </thead>
+                <tbody id="fitness-tbody" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. RESULTS DATABASE -->
         <section id="view-results" class="hidden space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
@@ -483,17 +555,16 @@
           </div>
         </section>
 
-        <!-- 6. ACCOUNTS & PAYROLL -->
+        <!-- 8. ACCOUNTS, PAYROLL & EXPENSES -->
         <section id="view-accounts" class="hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             
+            <!-- Student Fee Receive -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
               <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
-                <i class="fa-solid fa-arrow-down-long text-emerald-600"></i> Receive Student Tuition Fee
+                <i class="fa-solid fa-arrow-down-long text-emerald-600"></i> Student Tuition Fee
               </h4>
-              <p class="text-[11px] text-emerald-700 font-semibold"><i class="fa-brands fa-whatsapp text-emerald-600"></i> Notification routed to Helpline (+8801689333000)</p>
-              
-              <form id="billing-form" onsubmit="handleFeePayment(event)" class="space-y-3">
+              <form id="billing-form" onsubmit="handleFeePayment(event)" class="space-y-2.5">
                 <div>
                   <label class="block font-semibold mb-1">Select Cadet</label>
                   <select id="bill-student" class="w-full border rounded-lg p-2" required></select>
@@ -522,16 +593,46 @@
                   </div>
                 </div>
                 <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-lg mt-2 flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-receipt"></i> Process Fee & Notify WhatsApp
+                  <i class="fa-solid fa-receipt"></i> Receive & WhatsApp Alert
                 </button>
               </form>
             </div>
 
+            <!-- Campus Expense Tracker (NEW) -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
               <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
-                <i class="fa-solid fa-arrow-up-long text-red-600"></i> Disburse Faculty & Staff Salary
+                <i class="fa-solid fa-receipt text-amber-600"></i> Campus Operational Expense
               </h4>
-              <form id="payroll-form" onsubmit="handlePayrollSubmit(event)" class="space-y-3">
+              <form onsubmit="handleCampusExpense(event)" class="space-y-2.5">
+                <div>
+                  <label class="block font-semibold mb-1">Expense Title</label>
+                  <input type="text" id="expense-title" placeholder="e.g. Campus Electricity / Refreshment" required class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Category</label>
+                  <select id="expense-category" class="w-full border rounded-lg p-2">
+                    <option>Utility & Electricity</option>
+                    <option>Stationery & Exam Print</option>
+                    <option>Campus Maintenance</option>
+                    <option>Parade Equipment</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Amount (BDT)</label>
+                  <input type="number" id="expense-amount" placeholder="৳ Amount" required class="w-full border rounded-lg p-2">
+                </div>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg mt-2 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-minus-circle"></i> Record Expense
+                </button>
+              </form>
+            </div>
+
+            <!-- Faculty Payroll -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
+              <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-up-long text-red-600"></i> Faculty & Staff Salary
+              </h4>
+              <form id="payroll-form" onsubmit="handlePayrollSubmit(event)" class="space-y-2.5">
                 <div>
                   <label class="block font-semibold mb-1">Select Instructor / Employee</label>
                   <select id="salary-teacher" onchange="autoFillSalary()" class="w-full border rounded-lg p-2" required></select>
@@ -545,28 +646,30 @@
                     <option>October</option><option>November</option><option>December</option>
                   </select>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="block font-semibold mb-1">Disbursed Amount (BDT)</label>
-                    <input type="number" id="salary-amount" placeholder="৳ Amount" required class="w-full border rounded-lg p-2">
-                  </div>
-                  <div>
-                    <label class="block font-semibold mb-1">Payment Method</label>
-                    <select id="salary-method" class="w-full border rounded-lg p-2">
-                      <option>Direct Cash</option>
-                      <option>Bank Transfer</option>
-                      <option>bKash Corporate</option>
-                    </select>
-                  </div>
+                <div>
+                  <label class="block font-semibold mb-1">Disbursed Amount (BDT)</label>
+                  <input type="number" id="salary-amount" placeholder="৳ Amount" required class="w-full border rounded-lg p-2">
                 </div>
                 <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-lg mt-2 flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-hand-holding-dollar"></i> Disburse Salary & Record
+                  <i class="fa-solid fa-hand-holding-dollar"></i> Disburse Salary
                 </button>
               </form>
             </div>
 
           </div>
 
+          <!-- Auto Due Fee Reminder Bar (NEW) -->
+          <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
+            <div>
+              <h4 class="font-bold text-amber-900">Automated Tuition Due Reminders</h4>
+              <p class="text-amber-700">Dispatch bulk WhatsApp reminder notifications to guardians who have not paid current month fees.</p>
+            </div>
+            <button onclick="dispatchDueFeeReminders()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg whitespace-nowrap">
+              <i class="fa-brands fa-whatsapp"></i> Broadcast Due Alerts
+            </button>
+          </div>
+
+          <!-- Transaction Ledger -->
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs">
             <h4 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2">Central Accounts Ledger</h4>
             <div class="overflow-x-auto">
@@ -588,7 +691,94 @@
           </div>
         </section>
 
-        <!-- 7. NOTICE MANAGER -->
+        <!-- 9. TC & TESTIMONIAL CERTIFICATE GENERATOR (NEW) -->
+        <section id="view-certificates" class="hidden space-y-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center text-xs">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Official Transfer Certificate & Testimonials</h3>
+              <p class="text-slate-500">Select cadet to generate instant institutional transfer credential.</p>
+            </div>
+            <div class="flex gap-2">
+              <select id="cert-cadet-select" onchange="generateCertificatePreview()" class="border rounded-lg p-2"></select>
+              <button onclick="window.print()" class="bg-slate-900 text-white px-3 py-2 rounded-lg font-bold"><i class="fa-solid fa-print"></i> Print Certificate</button>
+            </div>
+          </div>
+
+          <div id="certificate-print-area" class="flex justify-center p-4">
+            <div class="w-full max-w-2xl bg-white border-8 border-double border-slate-300 p-8 rounded-xl shadow-lg text-center relative space-y-4">
+              <div class="border-b-2 border-emerald-800 pb-3">
+                <h2 class="text-2xl font-black text-slate-900 uppercase">North South Pre-Cadet Academy[cite: 1]</h2>
+                <p class="text-xs text-emerald-800 font-bold tracking-wider">Rouha Bazar, Sarishabari, Jamalpur, Bangladesh[cite: 1]</p>
+                <span class="inline-block bg-amber-100 text-amber-900 border border-amber-300 px-3 py-0.5 rounded-full text-[11px] font-bold mt-2">TRANSFER CERTIFICATE & TESTIMONIAL</span>
+              </div>
+              <p class="text-xs text-justify leading-relaxed text-slate-700 indent-8" id="certificate-body-text">
+                This is to certify that cadet <strong id="cert-name" class="underline">Tanvir Ahmed</strong>, Son of <strong id="cert-father">Abdul Alim</strong>, was a bona-fide student of this pre-cadet academy reading in <strong id="cert-class">Class 7</strong> under Cadet ID <strong id="cert-id">#NS-101</strong>. During his stay in this institution, his moral character, discipline and physical parade performance were highly satisfactory.
+              </p>
+              <div class="grid grid-cols-2 pt-12 text-xs font-semibold text-slate-700">
+                <div class="text-left">Date of Issue: <span id="cert-date">2026-10-23</span></div>
+                <div class="text-right">
+                  <span class="border-t border-slate-800 px-6 pt-1 font-bold">Principal Signature</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. SYSTEM LOGS & 1-CLICK CLOUD BACKUP (NEW) -->
+        <section id="view-systemlogs" class="hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
+              <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-down text-emerald-700"></i> Database Backup & Disaster Recovery
+              </h4>
+              <p class="text-slate-500">Download whole school database as an encrypted JSON backup file, or restore existing database file.</p>
+              
+              <div class="flex gap-2">
+                <button onclick="downloadJSONBackup()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-lg">
+                  <i class="fa-solid fa-download"></i> 1-Click JSON Backup
+                </button>
+                <label class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-center cursor-pointer">
+                  <i class="fa-solid fa-upload"></i> Restore Backup
+                  <input type="file" id="restore-file-input" onchange="restoreJSONBackup(event)" class="hidden" accept=".json">
+                </label>
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
+              <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-shield-virus text-red-600"></i> System Security Information
+              </h4>
+              <p class="text-slate-600">Automated 5-minute reactive refresh active. Role Access strictly gated by cryptographic local storage state.</p>
+              <div class="p-2.5 bg-slate-50 border rounded-lg font-mono text-[11px] space-y-1">
+                <div>Super Admin: <strong>admin</strong> (All Power)</div>
+                <div>Admin WhatsApp: <strong>+880 1681-196700</strong></div>
+                <div>Campus Emergency: <strong>+8801689333000</strong></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Audit Trail List -->
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs">
+            <h4 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2">Institutional Audit Trail & Activity Logs</h4>
+            <div class="overflow-x-auto max-h-60 custom-scroll">
+              <table class="w-full text-left">
+                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                  <tr>
+                    <th class="px-3 py-2">Timestamp</th>
+                    <th class="px-3 py-2">User / Operator</th>
+                    <th class="px-3 py-2">Role</th>
+                    <th class="px-3 py-2">Operation Details</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-tbody" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11. NOTICE MANAGER -->
         <section id="view-notices" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs">
             <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-2">Publish / Update Moving Notice</h4>
@@ -602,12 +792,12 @@
           </div>
         </section>
 
-        <!-- 8. CADET ID CARD GENERATOR -->
+        <!-- 12. CADET ID CARD GENERATOR WITH SMART QR -->
         <section id="view-idcards" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Official Cadet Identity Badge</h3>
-              <p class="text-xs text-slate-500">Cadet badge card for institutional verification</p>
+              <p class="text-xs text-slate-500">Includes Smart QR code for automatic gate scan attendance</p>
             </div>
             <button onclick="window.print()" class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg font-bold">
               <i class="fa-solid fa-print"></i> Print Badge
@@ -621,15 +811,18 @@
                 <p class="text-[9px] text-amber-300">Rouha Bazar, Sarishabari, Jamalpur[cite: 1]</p>
               </div>
 
-              <div class="my-4">
-                <div class="w-20 h-20 mx-auto rounded-full bg-slate-100 border-2 border-emerald-700 flex items-center justify-center overflow-hidden">
+              <div class="my-4 flex items-center justify-between px-2">
+                <div class="w-20 h-20 rounded-full bg-slate-100 border-2 border-emerald-700 flex items-center justify-center overflow-hidden">
                   <i class="fa-solid fa-user-tie text-3xl text-slate-400"></i>
                 </div>
-                <h3 class="font-black text-base text-slate-900 mt-2" id="idcard-name">Cadet Name</h3>
-                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Class 7</span>
+                <!-- Dynamic QR Box on ID Card -->
+                <div id="idcard-qrcode" class="w-16 h-16 border p-1 rounded bg-white shadow-sm flex items-center justify-center"></div>
               </div>
 
-              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left text-xs space-y-1.5">
+              <h3 class="font-black text-base text-slate-900" id="idcard-name">Cadet Name</h3>
+              <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Class 7</span>
+
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left text-xs space-y-1.5 mt-3">
                 <div class="flex justify-between">
                   <span class="text-slate-500">Cadet ID:</span>
                   <span class="font-bold text-slate-800" id="idcard-id">#NS-101</span>
@@ -639,7 +832,7 @@
                   <span class="font-bold text-slate-800" id="idcard-guardian">N/A</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-slate-500">Guardian Contact:</span>
+                  <span class="text-slate-500">Contact:</span>
                   <span class="font-bold text-slate-800" id="idcard-phone">017XXXXXXXX</span>
                 </div>
                 <div class="flex justify-between">
@@ -662,23 +855,19 @@
       <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 flex justify-around items-center py-2 z-40 text-[9px] text-slate-400">
         <button onclick="navigateView('dashboard')" id="mob-dashboard" class="flex flex-col items-center gap-1 text-emerald-400 font-bold">
           <i class="fa-solid fa-chart-line text-sm"></i>
-          <span>Dashboard</span>
+          <span>Home</span>
         </button>
         <button onclick="navigateView('students')" id="mob-students" class="flex flex-col items-center gap-1">
           <i class="fa-solid fa-user-graduate text-sm"></i>
           <span>Cadets</span>
         </button>
-        <button onclick="navigateView('teachers')" id="mob-teachers" class="flex flex-col items-center gap-1">
-          <i class="fa-solid fa-chalkboard-user text-sm"></i>
-          <span>Faculty[cite: 1]</span>
+        <button onclick="navigateView('qrscanner')" id="mob-qrscanner" class="flex flex-col items-center gap-1">
+          <i class="fa-solid fa-qrcode text-sm"></i>
+          <span>QR Scan</span>
         </button>
         <button onclick="navigateView('attendance')" id="mob-attendance" class="flex flex-col items-center gap-1">
           <i class="fa-solid fa-clipboard-user text-sm"></i>
           <span>Parade</span>
-        </button>
-        <button onclick="navigateView('results')" id="mob-results" class="flex flex-col items-center gap-1">
-          <i class="fa-solid fa-file-invoice text-sm"></i>
-          <span>Results</span>
         </button>
         <button onclick="navigateView('accounts')" id="mob-accounts" class="flex flex-col items-center gap-1">
           <i class="fa-solid fa-scale-balanced text-sm"></i>
@@ -758,7 +947,7 @@
     </div>
   </div>
 
-  <!-- INSTRUCTOR & STAFF FORM MODAL WITH USERNAME & PASSWORD -->
+  <!-- INSTRUCTOR MODAL -->
   <div id="modal-teacher" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -768,13 +957,11 @@
 
       <form id="teacher-form" onsubmit="handleTeacherFormSubmit(event)" class="space-y-3 text-xs">
         <input type="hidden" id="edit-teacher-id">
-        
         <div>
           <label class="block font-semibold mb-1">Instructor / Staff Full Name *</label>
           <input type="text" id="form-teacher-name" required class="w-full border rounded-lg p-2" placeholder="e.g. Md. Shahidul Islam">
         </div>
 
-        <!-- NEW USERNAME & PASSWORD BOXES -->
         <div class="grid grid-cols-2 gap-3 bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-200">
           <div>
             <label class="block font-bold text-emerald-900 mb-1">System Username *</label>
@@ -844,24 +1031,51 @@
             <input type="tel" id="form-teacher-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
           </div>
           <div>
-            <label class="block font-semibold mb-1">Email Address (For Password Reset) *</label>
+            <label class="block font-semibold mb-1">Email (For Recovery) *</label>
             <input type="email" id="form-teacher-email" required class="w-full border rounded-lg p-2" placeholder="instructor@nspacademy.edu.bd">
           </div>
-        </div>
-
-        <div>
-          <label class="block font-semibold mb-1">Present Address</label>
-          <textarea id="form-teacher-present-address" rows="2" class="w-full border rounded-lg p-2" placeholder="Present address..."></textarea>
-        </div>
-
-        <div>
-          <label class="block font-semibold mb-1">Permanent Address</label>
-          <textarea id="form-teacher-permanent-address" rows="2" class="w-full border rounded-lg p-2" placeholder="Permanent address / Village..."></textarea>
         </div>
 
         <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg mt-3 shadow">
           Save Instructor Profile & Access Role
         </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CADET FITNESS MODAL (NEW) -->
+  <div id="modal-fitness" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-xs space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-sm">Record Cadet Fitness & Drill Score</h3>
+        <button onclick="toggleModal('modal-fitness')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleFitnessSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block font-semibold mb-1">Select Cadet</label>
+          <select id="fit-cadet-select" class="w-full border rounded-lg p-2" required></select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Height (cm)</label>
+            <input type="number" id="fit-height" placeholder="140" required class="w-full border rounded-lg p-2">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Weight (kg)</label>
+            <input type="number" id="fit-weight" placeholder="38" required class="w-full border rounded-lg p-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Parade Score (/100)</label>
+            <input type="number" id="fit-drill" placeholder="92" required class="w-full border rounded-lg p-2">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Merit / Conduct Pts</label>
+            <input type="number" id="fit-conduct" placeholder="95" required class="w-full border rounded-lg p-2">
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-2 rounded-lg">Save Physical Assessment</button>
       </form>
     </div>
   </div>
@@ -942,28 +1156,28 @@
           father: "Abdul Alim", mother: "Rina Begum", guardian: "Abdul Alim", 
           phone: "01742955450", email: "tanvir@cadet.bd",
           presentAddress: "Rouha Bazar, Sarishabari", permanentAddress: "Sarishabari, Jamalpur",
-          present: true 
+          present: true, dueFee: 0
         },
         { 
           id: 102, name: "Maria Sultana", class: "Class 6", blood: "A+", 
           father: "Rafiqul Islam", mother: "Salma Khatun", guardian: "Rafiqul Islam", 
           phone: "01819223344", email: "maria@cadet.bd",
           presentAddress: "Shimla, Sarishabari", permanentAddress: "Sarishabari, Jamalpur",
-          present: true 
+          present: true, dueFee: 1500
         },
         { 
           id: 103, name: "Rayhan Kabir", class: "Class 5", blood: "B+", 
           father: "Humayun Kabir", mother: "Nasima Akter", guardian: "Humayun Kabir", 
           phone: "01912334455", email: "rayhan@cadet.bd",
           presentAddress: "Rouha, Sarishabari", permanentAddress: "Sarishabari, Jamalpur",
-          present: false 
+          present: false, dueFee: 1500 
         },
         { 
           id: 104, name: "Sadia Islam", class: "Class 4", blood: "AB+", 
           father: "Sirajul Islam", mother: "Kohinoor Begum", guardian: "Sirajul Islam", 
           phone: "01622445566", email: "sadia@cadet.bd",
           presentAddress: "Sarishabari Sadar", permanentAddress: "Sarishabari, Jamalpur",
-          present: true 
+          present: true, dueFee: 0 
         }
       ],
       teachers: [
@@ -989,6 +1203,10 @@
           presentAddress: "Rouha Bazar", permanentAddress: "Sarishabari" 
         }
       ],
+      fitnessRecords: [
+        { cadetId: 101, name: "Tanvir Ahmed", class: "Class 7", height: 145, weight: 40, bmi: "19.0", drillScore: 95, conduct: 98 },
+        { cadetId: 102, name: "Maria Sultana", class: "Class 6", height: 138, weight: 34, bmi: "17.8", drillScore: 88, conduct: 94 }
+      ],
       results: [
         { id: "RES101", cadetId: 101, name: "Tanvir Ahmed", class: "Class 7", term: "Mid Term Examination", bangla: 85, english: 88, math: 92, drill: 95, gpa: "5.00", grade: "A+" },
         { id: "RES102", cadetId: 102, name: "Maria Sultana", class: "Class 6", term: "Mid Term Examination", bangla: 78, english: 82, math: 80, drill: 90, gpa: "4.75", grade: "A" }
@@ -996,7 +1214,11 @@
       transactions: [
         { id: "TX1001", type: "INFLOW", entity: "Tanvir Ahmed", reason: "Monthly Tuition Fee", method: "bKash", amount: 1500, date: "2026-10-20" },
         { id: "TX1002", type: "INFLOW", entity: "Maria Sultana", reason: "Monthly Tuition Fee", method: "Cash Counter", amount: 1500, date: "2026-10-21" },
-        { id: "TX5001", type: "OUTFLOW", entity: "Capt. M. A. Rahman", reason: "Faculty Salary: September", method: "Bank Transfer", amount: 28000, date: "2026-10-01" }
+        { id: "TX5001", type: "OUTFLOW", entity: "Capt. M. A. Rahman", reason: "Faculty Salary: September", method: "Bank Transfer", amount: 28000, date: "2026-10-01" },
+        { id: "TX9001", type: "OUTFLOW", entity: "Sarishabari Power Grid", reason: "Campus Electricity Bill", method: "Cash Counter", amount: 3200, date: "2026-10-15" }
+      ],
+      auditLogs: [
+        { timestamp: "2026-10-23 09:15", user: "Super Administrator", role: "ADMIN", action: "System Initialized with Smart Modules." }
       ]
     };
 
@@ -1004,12 +1226,24 @@
     let currentUser = JSON.parse(localStorage.getItem('north_south_user')) || null;
     let activeAttendanceClassFilter = "All";
     let analyticsChartInstance = null;
+    let html5QrScanner = null;
     let pendingTxDeleteId = null;
     let generatedOtp = null;
     let recoveryEmailAccount = null;
     let generatedPasswordPin = null;
 
-    // Database Sync
+    // Log Central Audit Actions
+    function logAudit(action) {
+      const entry = {
+        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        user: currentUser ? currentUser.username : "System",
+        role: currentUser ? currentUser.role.toUpperCase() : "GUEST",
+        action: action
+      };
+      appState.auditLogs.unshift(entry);
+    }
+
+    // State Synchronization
     function saveState() {
       localStorage.setItem('north_south_db', JSON.stringify(appState));
       refreshAllSystemViews();
@@ -1021,13 +1255,15 @@
       renderTeacherTable();
       renderAttendanceView();
       renderResultTable();
+      renderFitnessTable();
       renderTransactions();
+      renderAuditLogs();
       populateDropdowns();
       document.getElementById('ticker-content').innerText = appState.notice;
       if(analyticsChartInstance) initChart();
     }
 
-    // 5-Minute Auto Refresh Timer
+    // 5-Minute Reactive Auto-Refresh Timer
     setInterval(() => {
       appState = JSON.parse(localStorage.getItem('north_south_db')) || DEFAULT_DATA;
       refreshAllSystemViews();
@@ -1042,27 +1278,22 @@
       }
     }, 300000);
 
-    // Dynamic Login
+    // Authentication Handlers
     function handleAuthLogin(e) {
       e.preventDefault();
       const u = document.getElementById('auth-user').value.trim();
       const p = document.getElementById('auth-pass').value.trim();
       const err = document.getElementById('login-error');
 
-      // 1. Super Admin Check
       if (u === 'admin' && p === 'admin123') {
         currentUser = { username: 'Super Administrator', role: 'admin' };
-      } 
-      // 2. Default Roles Check
-      else if (u === 'manager' && p === 'manager123') {
+      } else if (u === 'manager' && p === 'manager123') {
         currentUser = { username: 'Academy Manager', role: 'manager' };
       } else if (u === 'accounts' && p === 'accounts123') {
         currentUser = { username: 'Head of Accounts', role: 'accounts' };
       } else if (u === 'teacher' && p === 'teacher123') {
         currentUser = { username: 'Faculty Teacher', role: 'teacher' };
-      } 
-      // 3. Dynamic Database Users Check (by Username, Staff ID or Phone)
-      else {
+      } else {
         const matched = appState.teachers.find(t => 
           (t.username && t.username.toLowerCase() === u.toLowerCase()) || 
           t.id.toString() === u || 
@@ -1084,6 +1315,7 @@
         }
       }
 
+      logAudit(`User Login: ${currentUser.username} (${currentUser.role})`);
       localStorage.setItem('north_south_user', JSON.stringify(currentUser));
       initAppView();
     }
@@ -1098,7 +1330,6 @@
     function handlePasswordResetRequest(e) {
       e.preventDefault();
       const email = document.getElementById('reset-email').value.trim().toLowerCase();
-      
       const user = appState.teachers.find(t => t.email && t.email.toLowerCase() === email);
       
       if(email === 'admin@northsouthacademy.edu.bd' || user) {
@@ -1107,7 +1338,7 @@
         
         document.getElementById('reset-box').classList.add('hidden');
         document.getElementById('new-password-box').classList.remove('hidden');
-        document.getElementById('otp-alert-text').innerText = `Recovery PIN generated & sent to ${email}: [PIN: ${generatedPasswordPin}]`;
+        document.getElementById('otp-alert-text').innerText = `Recovery PIN sent to ${email}: [PIN: ${generatedPasswordPin}]`;
         alert(`Password Recovery PIN sent to ${email}!\nVerification PIN: ${generatedPasswordPin}`);
       } else {
         alert("This email address is not registered in the school database!");
@@ -1120,23 +1351,22 @@
       const newPass = document.getElementById('input-new-pass').value.trim();
 
       if(pin === generatedPasswordPin && recoveryEmailAccount) {
-        if(recoveryEmailAccount.username === 'admin') {
-          alert("Default Super Admin password reset simulated! Please login with your new password.");
-        } else {
+        if(recoveryEmailAccount.username !== 'admin') {
           const target = appState.teachers.find(t => t.id === recoveryEmailAccount.id);
           if(target) {
             target.password = newPass;
             saveState();
           }
-          alert(`Password successfully updated for ${recoveryEmailAccount.name}! Please login.`);
         }
+        alert(`Password updated! Please login with your new password.`);
         showResetBox(false);
       } else {
-        alert("Invalid 4-digit PIN! Please enter the exact PIN provided.");
+        alert("Invalid PIN! Access Denied.");
       }
     }
 
     function logoutSession() {
+      if(currentUser) logAudit(`User Logout: ${currentUser.username}`);
       localStorage.removeItem('north_south_user');
       currentUser = null;
       document.getElementById('app-workspace').classList.add('hidden');
@@ -1154,7 +1384,7 @@
       initChart();
     }
 
-    // Role-Based UI Controls
+    // Role Permissions
     function applyRoleAccessPermissions() {
       const r = currentUser.role;
       const isAdmin = (r === 'admin');
@@ -1166,7 +1396,6 @@
       const btnAddTeacher = document.getElementById('btn-add-teacher');
       const btnAddResult = document.getElementById('btn-add-result');
 
-      // Admin & Manager both can register instructors/cadets
       if (btnAddCadet) btnAddCadet.style.display = (isAdmin || isManager) ? 'flex' : 'none';
       if (btnAddTeacher) btnAddTeacher.style.display = (isAdmin || isManager) ? 'flex' : 'none';
       if (btnAddResult) btnAddResult.style.display = (isAdmin || isManager || isTeacher) ? 'flex' : 'none';
@@ -1174,16 +1403,13 @@
       document.getElementById('nav-accounts').style.display = (isAdmin || isManager || isAccounts) ? 'flex' : 'none';
       document.getElementById('nav-teachers').style.display = (isAdmin || isManager) ? 'flex' : 'none';
       document.getElementById('nav-idcards').style.display = (isAdmin || isManager) ? 'flex' : 'none';
+      document.getElementById('nav-certificates').style.display = (isAdmin || isManager) ? 'flex' : 'none';
+      document.getElementById('nav-systemlogs').style.display = (isAdmin) ? 'flex' : 'none';
       document.getElementById('nav-notices').style.display = (isAdmin || isManager) ? 'flex' : 'none';
-
-      const mobAccounts = document.getElementById('mob-accounts');
-      const mobTeachers = document.getElementById('mob-teachers');
-      if (mobAccounts) mobAccounts.style.display = (isAdmin || isManager || isAccounts) ? 'flex' : 'none';
-      if (mobTeachers) mobTeachers.style.display = (isAdmin || isManager) ? 'flex' : 'none';
     }
 
     function navigateView(viewName) {
-      const views = ['dashboard', 'students', 'teachers', 'attendance', 'results', 'accounts', 'notices', 'idcards'];
+      const views = ['dashboard', 'students', 'teachers', 'attendance', 'qrscanner', 'fitness', 'results', 'accounts', 'certificates', 'systemlogs', 'notices', 'idcards'];
       views.forEach(v => {
         const elem = document.getElementById(`view-${v}`);
         if(elem) elem.classList.add('hidden');
@@ -1193,25 +1419,13 @@
           b.classList.remove('bg-emerald-800', 'text-white', 'font-semibold');
           b.classList.add('text-slate-300');
         }
-        const mob = document.getElementById(`mob-${v}`);
-        if(mob) {
-          mob.classList.remove('text-emerald-400', 'font-bold');
-          mob.classList.add('text-slate-400');
-        }
       });
 
       document.getElementById(`view-${viewName}`).classList.remove('hidden');
-      
       const activeBtn = document.getElementById(`nav-${viewName}`);
       if(activeBtn) {
         activeBtn.classList.add('bg-emerald-800', 'text-white', 'font-semibold');
         activeBtn.classList.remove('text-slate-300');
-      }
-
-      const activeMob = document.getElementById(`mob-${viewName}`);
-      if(activeMob) {
-        activeMob.classList.add('text-emerald-400', 'font-bold');
-        activeMob.classList.remove('text-slate-400');
       }
 
       const titles = {
@@ -1219,8 +1433,12 @@
         students: "Cadet Enrolled Database",
         teachers: "Faculty & Staff Directory[cite: 1]",
         attendance: "Daily Parade Attendance",
+        qrscanner: "Smart Gate QR Code Scanner",
+        fitness: "Cadet Physical Fitness & Discipline Log",
         results: "Student Examination Results Database",
         accounts: "Institution Accounts & Payroll",
+        certificates: "Transfer Certificates & Testimonials",
+        systemlogs: "Database Cloud Backup & Audit Logs",
         notices: "Institutional Notice Board",
         idcards: "Cadet Identity Badge"
       };
@@ -1294,8 +1512,9 @@
     function deleteCadet(id) {
       if (confirm(`Delete Cadet #NS-${id}? The record will be permanently purged across ERP.`)) {
         if(currentUser.role === 'manager') {
-          notifyAdminWhatsApp(`[Security Alert: Deletion Log]\nManager ${currentUser.username} deleted Cadet #NS-${id} at ${new Date().toLocaleTimeString()}`);
+          notifyAdminWhatsApp(`[Security Alert: Deletion Log]\nManager ${currentUser.username} deleted Cadet #NS-${id}`);
         }
+        logAudit(`Deleted Cadet #NS-${id}`);
         appState.students = appState.students.filter(s => s.id !== id);
         appState.results = appState.results.filter(r => r.cadetId !== id);
         saveState();
@@ -1315,22 +1534,25 @@
         phone: document.getElementById('form-cadet-phone').value,
         email: document.getElementById('form-cadet-email').value,
         presentAddress: document.getElementById('form-cadet-present-address').value,
-        permanentAddress: document.getElementById('form-cadet-permanent-address').value
+        permanentAddress: document.getElementById('form-cadet-permanent-address').value,
+        dueFee: 0
       };
 
       if (editId) {
         const target = appState.students.find(s => s.id == editId);
         if (target) Object.assign(target, data);
+        logAudit(`Updated Cadet #${editId} - ${data.name}`);
       } else {
         const newId = 100 + appState.students.length + 1;
         appState.students.push({ id: newId, ...data, present: true });
+        logAudit(`Enrolled New Cadet #${newId} - ${data.name}`);
       }
 
       saveState();
       toggleModal('modal-cadet');
     }
 
-    // INSTRUCTOR & STAFF OPERATIONS (WITH USERNAME & PASSWORD)
+    // INSTRUCTOR & STAFF OPERATIONS
     function renderTeacherTable() {
       const tbody = document.getElementById('teacher-tbody');
       tbody.innerHTML = '';
@@ -1393,9 +1615,7 @@
 
     function deleteTeacher(id) {
       if(confirm(`Remove instructor #ST-${id} from ERP directory?`)) {
-        if(currentUser.role === 'manager') {
-          notifyAdminWhatsApp(`[Security Alert: Deletion Log]\nManager ${currentUser.username} removed Instructor ID #ST-${id} at ${new Date().toLocaleTimeString()}`);
-        }
+        logAudit(`Removed Instructor #ST-${id}`);
         appState.teachers = appState.teachers.filter(t => t.id !== id);
         saveState();
       }
@@ -1425,9 +1645,11 @@
       if(editId) {
         const target = appState.teachers.find(t => t.id == editId);
         if(target) Object.assign(target, data);
+        logAudit(`Updated Staff #${editId} - ${data.name}`);
       } else {
         const newId = 200 + appState.teachers.length + 1;
         appState.teachers.push({ id: newId, ...data });
+        logAudit(`Created New Staff Account #${newId} (${data.username})`);
         alert(`Account created successfully!\nAssigned Staff ID: #ST-${newId}\nUsername: ${data.username}`);
       }
 
@@ -1505,20 +1727,120 @@
       const message = `[North South Pre-Cadet Academy]\nNotice: Cadet ${name} (${cadetClass}) is ABSENT in today's parade/drill.\nPlease contact campus authority: ${HELPLINE_NUMBER}.`;
 
       if(channel === 'whatsapp') {
-        const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
+        window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
       } else {
-        const url = `sms:${formattedPhone}?body=${encodeURIComponent(message)}`;
-        window.location.href = url;
+        window.location.href = `sms:${formattedPhone}?body=${encodeURIComponent(message)}`;
       }
     }
 
     function commitAttendance() {
       const absentCadets = appState.students.filter(s => !s.present);
+      logAudit(`Parade Attendance Logged (Present: ${appState.students.length - absentCadets.length}, Absent: ${absentCadets.length})`);
       alert(`Parade Attendance Saved Successfully!\nTotal Present: ${appState.students.length - absentCadets.length}\nTotal Absent: ${absentCadets.length}`);
     }
 
-    // RESULTS DATABASE & EXAMINATIONS
+    // QR SCANNER LOGIC (NEW)
+    function startQRScanner() {
+      if(!html5QrScanner) {
+        html5QrScanner = new Html5Qrcode("qr-reader");
+      }
+      html5QrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        (decodedText) => {
+          handleScannedQRCode(decodedText);
+        },
+        (errorMessage) => {}
+      ).catch(err => {
+        alert("Camera permission denied or camera not accessible.");
+      });
+    }
+
+    function stopQRScanner() {
+      if(html5QrScanner) {
+        html5QrScanner.stop().then(() => {
+          document.getElementById('qr-reader').innerHTML = '';
+        });
+      }
+    }
+
+    function handleScannedQRCode(text) {
+      // Decode #NS-101
+      const idMatch = text.match(/\d+/);
+      if(idMatch) {
+        const id = Number(idMatch[0]);
+        const cadet = appState.students.find(s => s.id === id);
+        if(cadet) {
+          cadet.present = true;
+          saveState();
+          document.getElementById('scan-result-card').innerHTML = `
+            <div class="text-emerald-700 font-bold text-sm">✓ Gate Attendance Verified!</div>
+            <div><strong>Cadet:</strong> ${cadet.name} (#NS-${cadet.id})</div>
+            <div><strong>Class:</strong> ${cadet.class} | Blood: ${cadet.blood}</div>
+            <div><strong>Guardian Contact:</strong> ${cadet.phone}</div>
+            <div class="text-[10px] text-slate-400">Timestamp: ${new Date().toLocaleTimeString()}</div>
+          `;
+          logAudit(`Smart QR Gate Scan: Cadet #${cadet.id} marked Present`);
+        }
+      }
+    }
+
+    // CADET FITNESS & MERIT
+    function renderFitnessTable() {
+      const tbody = document.getElementById('fitness-tbody');
+      tbody.innerHTML = '';
+      appState.fitnessRecords.forEach(f => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="px-4 py-2 font-bold">#NS-${f.cadetId}</td>
+            <td class="px-4 py-2 font-semibold">${f.name}</td>
+            <td class="px-4 py-2">${f.class}</td>
+            <td class="px-4 py-2">${f.height} cm / ${f.weight} kg</td>
+            <td class="px-4 py-2 font-bold text-emerald-700">${f.bmi}</td>
+            <td class="px-4 py-2 font-bold">${f.drillScore}/100</td>
+            <td class="px-4 py-2"><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">${f.conduct} Pts</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function openFitnessModal() {
+      const sel = document.getElementById('fit-cadet-select');
+      sel.innerHTML = '';
+      appState.students.forEach(s => {
+        sel.innerHTML += `<option value="${s.id}">${s.name} (${s.class})</option>`;
+      });
+      toggleModal('modal-fitness');
+    }
+
+    function handleFitnessSubmit(e) {
+      e.preventDefault();
+      const id = Number(document.getElementById('fit-cadet-select').value);
+      const cadet = appState.students.find(s => s.id === id);
+      const h = Number(document.getElementById('fit-height').value);
+      const w = Number(document.getElementById('fit-weight').value);
+      const drill = Number(document.getElementById('fit-drill').value);
+      const conduct = Number(document.getElementById('fit-conduct').value);
+      const bmi = (w / ((h/100)*(h/100))).toFixed(1);
+
+      appState.fitnessRecords = appState.fitnessRecords.filter(f => f.cadetId !== id);
+      appState.fitnessRecords.push({
+        cadetId: id,
+        name: cadet.name,
+        class: cadet.class,
+        height: h,
+        weight: w,
+        bmi: bmi,
+        drillScore: drill,
+        conduct: conduct
+      });
+
+      logAudit(`Fitness score recorded for #${id}`);
+      saveState();
+      toggleModal('modal-fitness');
+    }
+
+    // RESULTS DATABASE
     function renderResultTable() {
       const tbody = document.getElementById('result-tbody');
       tbody.innerHTML = '';
@@ -1554,6 +1876,7 @@
         } else {
           appState.results.splice(idOrIdx, 1);
         }
+        logAudit(`Deleted exam result entry`);
         saveState();
       }
     }
@@ -1598,6 +1921,7 @@
         gpa, grade
       });
 
+      logAudit(`Recorded Marks for #${cadetId} (${term})`);
       saveState();
       toggleModal('modal-result');
       e.target.reset();
@@ -1624,13 +1948,16 @@
       toggleModal('modal-marksheet-preview');
     }
 
-    // ACCOUNTS, PAYROLL & OTP CONTROLS
+    // ACCOUNTS, EXPENSES & PAYROLL
     function populateDropdowns() {
       const billSel = document.getElementById('bill-student');
+      const certSel = document.getElementById('cert-cadet-select');
       if(billSel) {
         billSel.innerHTML = '';
+        if(certSel) certSel.innerHTML = '';
         appState.students.forEach(s => {
           billSel.innerHTML += `<option value="${s.name}">${s.name} (${s.class})</option>`;
+          if(certSel) certSel.innerHTML += `<option value="${s.id}">${s.name} (${s.class})</option>`;
         });
       }
 
@@ -1660,22 +1987,40 @@
       const date = new Date().toISOString().split('T')[0];
 
       appState.transactions.unshift({ id: txId, type: "INFLOW", entity: cadetName, reason, method, amount, date });
+      logAudit(`Tuition Fee Received: ${cadetName} (৳ ${amount})`);
       saveState();
       e.target.reset();
 
       const textMsg = encodeURIComponent(
         `[North South Pre-Cadet Academy Billing Alert]\n` +
         `-----------------------------------------\n` +
-        `TxID: ${txId}\n` +
-        `Cadet: ${cadetName}\n` +
-        `Purpose: ${reason}\n` +
-        `Channel: ${method}\n` +
-        `Amount Paid: BDT ${amount}/-\n` +
-        `Status: Verified Inflow\n` +
-        `Date: ${date}\n` +
-        `Campus: Rouha Bazar, Sarishabari`
+        `TxID: ${txId}\nCadet: ${cadetName}\nPurpose: ${reason}\nChannel: ${method}\nAmount Paid: BDT ${amount}/-\nStatus: Verified Inflow\nDate: ${date}\nCampus: Rouha Bazar, Sarishabari`
       );
       window.open(`https://api.whatsapp.com/send?phone=${HELPLINE_NUMBER}&text=${textMsg}`, '_blank');
+    }
+
+    function handleCampusExpense(e) {
+      e.preventDefault();
+      const title = document.getElementById('expense-title').value;
+      const cat = document.getElementById('expense-category').value;
+      const amount = Number(document.getElementById('expense-amount').value);
+      const txId = "EXP" + Math.floor(1000 + Math.random() * 9000);
+      const date = new Date().toISOString().split('T')[0];
+
+      appState.transactions.unshift({
+        id: txId,
+        type: "OUTFLOW",
+        entity: title,
+        reason: cat,
+        method: "Cash Counter",
+        amount,
+        date
+      });
+
+      logAudit(`Campus Expense Logged: ${title} (৳ ${amount})`);
+      saveState();
+      e.target.reset();
+      alert(`Campus operational expense recorded: ৳ ${amount}/-`);
     }
 
     function handlePayrollSubmit(e) {
@@ -1683,7 +2028,6 @@
       const sel = document.getElementById('salary-teacher');
       const teacherName = sel.options[sel.selectedIndex].text;
       const month = document.getElementById('salary-month').value;
-      const method = document.getElementById('salary-method').value;
       const amount = Number(document.getElementById('salary-amount').value);
       const txId = "SAL" + Math.floor(1000 + Math.random() * 9000);
       const date = new Date().toISOString().split('T')[0];
@@ -1693,14 +2037,31 @@
         type: "OUTFLOW",
         entity: teacherName,
         reason: `Salary: ${month}`,
-        method,
+        method: "Bank / Cash",
         amount,
         date
       });
 
+      logAudit(`Salary Disbursed: ${teacherName} (৳ ${amount})`);
       saveState();
       e.target.reset();
       alert(`Salary voucher processed for ${teacherName}!`);
+    }
+
+    function dispatchDueFeeReminders() {
+      const dueStudents = appState.students.filter(s => s.dueFee > 0);
+      if(dueStudents.length === 0) {
+        alert("All cadets currently have clear tuition records. No due reminders pending!");
+        return;
+      }
+
+      dueStudents.forEach(s => {
+        const msg = encodeURIComponent(
+          `[North South Pre-Cadet Academy Due Alert]\nDear Guardian of Cadet ${s.name} (${s.class}),\nMonthly institutional tuition fee of BDT ${s.dueFee}/- is currently due.\nPlease clear via bKash/Counter helpline: ${HELPLINE_NUMBER}.`
+        );
+        window.open(`https://api.whatsapp.com/send?phone=+88${s.phone.replace(/^0+/, '')}&text=${msg}`, '_blank');
+      });
+      logAudit(`Dispatched bulk due tuition reminders to ${dueStudents.length} guardians`);
     }
 
     function renderTransactions() {
@@ -1737,8 +2098,9 @@
     }
 
     function directDeleteTransaction(id) {
-      if(confirm(`Are you sure you want to permanently delete Transaction ${id}?`)) {
+      if(confirm(`Permanently delete Transaction ${id}?`)) {
         appState.transactions = appState.transactions.filter(t => t.id !== id);
+        logAudit(`Directly Deleted Transaction ${id}`);
         saveState();
       }
     }
@@ -1746,10 +2108,7 @@
     function requestOtpDeleteTransaction(id) {
       pendingTxDeleteId = id;
       generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-      
-      const msg = `[North South ERP Authorization Code]\nAccount Executive ${currentUser.username} requested to delete Transaction ID: ${id}.\nAuthorization 4-Digit OTP: ${generatedOtp}\nProvide this OTP only if verified.`;
-      notifyAdminWhatsApp(msg);
-
+      notifyAdminWhatsApp(`[Security Authorization Code]\nAccount Executive ${currentUser.username} requested to delete Transaction ID: ${id}.\n4-Digit OTP: ${generatedOtp}`);
       document.getElementById('input-auth-otp').value = '';
       toggleModal('modal-otp-auth');
     }
@@ -1758,19 +2117,82 @@
       const enteredOtp = document.getElementById('input-auth-otp').value.trim();
       if(enteredOtp === generatedOtp && pendingTxDeleteId) {
         appState.transactions = appState.transactions.filter(t => t.id !== pendingTxDeleteId);
+        logAudit(`OTP Authorized Purge of Tx #${pendingTxDeleteId}`);
         saveState();
         toggleModal('modal-otp-auth');
         alert("Transaction authorization passed. Record successfully purged!");
         pendingTxDeleteId = null;
         generatedOtp = null;
       } else {
-        alert("Invalid Authorization PIN! Access Denied.");
+        alert("Invalid PIN! Access Denied.");
       }
     }
 
     function notifyAdminWhatsApp(message) {
-      const url = `https://api.whatsapp.com/send?phone=${ADMIN_WHATSAPP}&text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
+      window.open(`https://api.whatsapp.com/send?phone=${ADMIN_WHATSAPP}&text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    // TRANSFER CERTIFICATE (NEW)
+    function generateCertificatePreview() {
+      const id = Number(document.getElementById('cert-cadet-select').value);
+      const s = appState.students.find(item => item.id === id);
+      if(!s) return;
+
+      document.getElementById('cert-name').innerText = s.name;
+      document.getElementById('cert-father').innerText = s.father || 'Guardian';
+      document.getElementById('cert-class').innerText = s.class;
+      document.getElementById('cert-id').innerText = `#NS-${s.id}`;
+      document.getElementById('cert-date').innerText = new Date().toISOString().split('T')[0];
+    }
+
+    // BACKUP & RESTORE (NEW)
+    function downloadJSONBackup() {
+      const jsonStr = JSON.stringify(appState, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `NSP_Academy_DB_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      logAudit("Exported 1-Click JSON Cloud Backup");
+    }
+
+    function restoreJSONBackup(event) {
+      const file = event.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if(parsed.students && parsed.teachers) {
+            appState = parsed;
+            saveState();
+            logAudit("Restored Full Database from JSON Backup");
+            alert("Database successfully restored and synchronized!");
+          } else {
+            alert("Invalid backup file structure!");
+          }
+        } catch(err) {
+          alert("Error parsing backup JSON file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function renderAuditLogs() {
+      const tbody = document.getElementById('audit-tbody');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+      appState.auditLogs.slice(0, 15).forEach(l => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="px-3 py-1.5 font-mono text-slate-500">${l.timestamp}</td>
+            <td class="px-3 py-1.5 font-semibold text-slate-800">${l.user}</td>
+            <td class="px-3 py-1.5"><span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-bold">${l.role}</span></td>
+            <td class="px-3 py-1.5 text-slate-600">${l.action}</td>
+          </tr>
+        `;
+      });
     }
 
     // NOTICE BOARD
@@ -1778,6 +2200,7 @@
       e.preventDefault();
       const text = document.getElementById('input-notice-text').value;
       appState.notice = `📢 Notice (${new Date().toLocaleDateString()}): ` + text;
+      logAudit(`Notice Updated: "${text.substring(0, 30)}..."`);
       saveState();
       document.getElementById('input-notice-text').value = '';
       alert("Notice ticker broadcasted live!");
@@ -1800,7 +2223,7 @@
       document.getElementById('stat-teachers').innerText = totalTeachers;
       document.getElementById('stat-att-rate').innerText = `${rate}%`;
       document.getElementById('stat-inflow').innerText = `৳ ${inflow.toLocaleString()}`;
-      document.getElementById('stat-outflow').innerText = `৳ ${outflow.toLocaleString()}`;
+      document.getElementById('stat-net-balance').innerText = `৳ ${(inflow - outflow).toLocaleString()}`;
     }
 
     function initChart() {
@@ -1811,9 +2234,9 @@
       analyticsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Total Inflow (x1000)', 'Salary Outflow (x1000)', 'Attendance %', 'Cadets Enrolled'],
+          labels: ['Total Revenue Inflow (x1000)', 'Total Outflow (x1000)', 'Parade Rate %', 'Total Cadets'],
           datasets: [{
-            label: 'Executive Metrics',
+            label: 'Institutional Balance',
             data: [
               appState.transactions.filter(t => t.type==='INFLOW').reduce((a,c)=>a+c.amount,0)/1000,
               appState.transactions.filter(t => t.type==='OUTFLOW').reduce((a,c)=>a+c.amount,0)/1000,
@@ -1832,7 +2255,7 @@
       });
     }
 
-    // ID CARD PREVIEW
+    // ID CARD PREVIEW WITH QR CODE
     function previewIDCard(id) {
       const s = appState.students.find(item => item.id === id);
       if(!s) return;
@@ -1842,6 +2265,19 @@
       document.getElementById('idcard-guardian').innerText = s.guardian || s.father || 'N/A';
       document.getElementById('idcard-phone').innerText = s.phone;
       document.getElementById('idcard-blood').innerText = s.blood;
+
+      // Generate Live QR Code inside ID Card
+      const qrContainer = document.getElementById('idcard-qrcode');
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, {
+        text: `NS-CADET-${s.id}`,
+        width: 60,
+        height: 60,
+        colorDark : "#0c2340",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.M
+      });
+
       navigateView('idcards');
     }
 
@@ -1854,8 +2290,8 @@
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.setAttribute('href', url);
-      a.setAttribute('download', 'cadets_database_cloud.csv');
+      a.href = url;
+      a.download = 'cadets_database_cloud.csv';
       a.click();
     }
 
