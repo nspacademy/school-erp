@@ -48,10 +48,11 @@
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased h-screen overflow-hidden flex flex-col pb-16 md:pb-0">
 
-  <!-- ================= AUTHENTICATION / LOGIN VIEW ================= -->
+  <!-- ================= AUTHENTICATION VIEW ================= -->
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-950 via-cadetNavy to-emerald-950 p-4">
     <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 w-full max-w-md p-7 relative overflow-hidden">
       
+      <!-- Login Box -->
       <div id="login-box">
         <div class="text-center">
           <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border-2 border-amber-400 flex items-center justify-center shadow-lg mb-2">
@@ -59,17 +60,17 @@
           </div>
           <h1 class="text-lg font-black text-slate-900 uppercase">North South</h1>
           <p class="text-xs font-semibold text-emerald-800 tracking-wider">PRE-CADET ACADEMY</p>
-          <p class="text-[10px] text-slate-500">Discipline • Leadership • Excellence[cite: 2]</p>
+          <p class="text-[10px] text-slate-500">Discipline • Leadership • Excellence</p>
         </div>
 
         <form id="login-form" onsubmit="handleAuthLogin(event)" class="mt-5 space-y-3.5 text-xs">
           <div id="login-error" class="hidden p-2 bg-red-50 text-red-700 border border-red-200 rounded text-center font-medium"></div>
 
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Username / User ID</label>
+            <label class="block font-bold text-slate-700 mb-1">Username / User ID / Staff ID</label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user-shield"></i></span>
-              <input type="text" id="auth-user" required placeholder="admin / manager / accounts / teacher" class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+              <input type="text" id="auth-user" required placeholder="admin / manager / accounts / staff ID" class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
             </div>
           </div>
 
@@ -94,21 +95,43 @@
         </div>
       </div>
 
+      <!-- Password Reset Box (Request PIN) -->
       <div id="reset-box" class="hidden text-xs">
         <div class="text-center mb-4">
-          <h2 class="text-base font-bold text-slate-800">Password Reset Request</h2>
-          <p class="text-[11px] text-slate-500">Enter registered account email</p>
+          <h2 class="text-base font-bold text-slate-800">Password Recovery</h2>
+          <p class="text-[11px] text-slate-500">Enter your account registered email</p>
         </div>
-        <form onsubmit="handlePasswordReset(event)" class="space-y-3">
+        <form onsubmit="handlePasswordResetRequest(event)" class="space-y-3">
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Email Address</label>
-            <input type="email" id="reset-email" required placeholder="admin@northsouthacademy.edu.bd" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            <label class="block font-bold text-slate-700 mb-1">Registered Email Address</label>
+            <input type="email" id="reset-email" required placeholder="name@nspacademy.edu.bd" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600">
           </div>
           <button type="submit" class="w-full py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold">
-            Send Reset Instructions
+            Send Reset PIN
           </button>
           <button type="button" onclick="showResetBox(false)" class="w-full py-1.5 text-slate-600 hover:underline">
             Back to Login
+          </button>
+        </form>
+      </div>
+
+      <!-- Password Change Verification Box -->
+      <div id="new-password-box" class="hidden text-xs space-y-3">
+        <div class="text-center mb-2">
+          <h2 class="text-base font-bold text-slate-800">Set New Password</h2>
+          <p class="text-[11px] text-emerald-700 font-medium" id="otp-alert-text"></p>
+        </div>
+        <form onsubmit="handlePasswordUpdateSubmit(event)" class="space-y-2.5">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Enter 4-Digit Reset PIN</label>
+            <input type="text" maxlength="4" id="input-verify-pin" required placeholder="••••" class="w-full p-2 rounded-lg border border-slate-300 text-center font-mono tracking-widest text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">New Password</label>
+            <input type="password" id="input-new-pass" required placeholder="At least 6 characters" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+          <button type="submit" class="w-full py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold">
+            Update & Login
           </button>
         </form>
       </div>
@@ -128,7 +151,7 @@
           </div>
           <div class="overflow-hidden">
             <h2 class="text-xs font-black text-white uppercase truncate">North South Academy[cite: 1]</h2>
-            <p class="text-[10px] text-emerald-400 font-semibold truncate"><i class="fa-solid fa-location-dot"></i> Rouha Bazar, Sarishabari[cite: 3]</p>
+            <p class="text-[10px] text-emerald-400 font-semibold truncate"><i class="fa-solid fa-location-dot"></i> Rouha Bazar, Sarishabari[cite: 1]</p>
           </div>
         </div>
 
@@ -171,7 +194,7 @@
       </div>
     </aside>
 
-    <!-- Main Workspace Frame -->
+    <!-- Content Workspace -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
       
       <!-- Top Action Bar -->
@@ -213,10 +236,10 @@
         <section id="view-dashboard" class="space-y-5">
           <div class="bg-gradient-to-r from-slate-950 via-cadetNavy to-emerald-900 rounded-2xl p-5 md:p-6 text-white shadow-lg relative overflow-hidden">
             <span class="bg-amber-400/20 text-amber-300 text-[11px] px-2.5 py-0.5 rounded font-bold border border-amber-400/30 uppercase tracking-wide">
-              Discipline • Leadership • Excellence[cite: 2]
+              Discipline • Leadership • Excellence
             </span>
             <h2 class="text-xl md:text-2xl font-black mt-2">North South Pre-Cadet Academy[cite: 1]</h2>
-            <p class="text-xs text-slate-300 mt-1">Rouha Bazar, Sarishabari, Jamalpur, Bangladesh, 2050[cite: 3]</p>
+            <p class="text-xs text-slate-300 mt-1">Rouha Bazar, Sarishabari, Jamalpur, Bangladesh, 2050[cite: 1]</p>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -316,12 +339,12 @@
           </div>
         </section>
 
-        <!-- 3. INSTRUCTORS & STAFF (WITH ROLE & DETAILED FIELDS) -->
+        <!-- 3. INSTRUCTORS & STAFF DIRECTORY -->
         <section id="view-teachers" class="hidden space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Faculty & Administrative Personnel[cite: 1]</h3>
-              <p class="text-xs text-slate-500">Configure roles, permissions, instructor profiles & salaries[cite: 1]</p>
+              <p class="text-xs text-slate-500">Manage instructor user accounts, role credentials & base salaries[cite: 1]</p>
             </div>
             <button id="btn-add-teacher" onclick="openTeacherModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2">
               <i class="fa-solid fa-plus"></i> Add New Instructor[cite: 23, 24]
@@ -335,12 +358,12 @@
                   <tr>
                     <th class="px-4 py-3">Staff ID</th>
                     <th class="px-4 py-3">Full Name</th>
+                    <th class="px-4 py-3">Username</th>
                     <th class="px-4 py-3">Role / Access</th>
                     <th class="px-4 py-3">Designation</th>
-                    <th class="px-4 py-3">Subject / Area</th>
                     <th class="px-4 py-3">Phone</th>
-                    <th class="px-4 py-3">Base Salary</th>
-                    <th class="px-4 py-3 text-center">Action Controls</th>
+                    <th class="px-4 py-3">Salary</th>
+                    <th class="px-4 py-3 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody id="teacher-tbody" class="divide-y divide-slate-100"></tbody>
@@ -436,7 +459,7 @@
               <div id="result-print-area" class="p-4 border rounded-xl bg-white space-y-4 text-xs">
                 <div class="text-center border-b pb-3">
                   <h3 class="font-black text-sm uppercase text-slate-900">North South Pre-Cadet Academy[cite: 1]</h3>
-                  <p class="text-[10px] text-slate-600">Rouha Bazar, Sarishabari, Jamalpur[cite: 3]</p>
+                  <p class="text-[10px] text-slate-600">Rouha Bazar, Sarishabari, Jamalpur[cite: 1]</p>
                   <h4 class="text-xs font-bold text-emerald-800 mt-1 uppercase" id="card-term">Terminal Evaluation</h4>
                 </div>
                 <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-lg border text-[11px]">
@@ -556,7 +579,7 @@
                     <th class="px-3 py-2">Category</th>
                     <th class="px-3 py-2">Method</th>
                     <th class="px-3 py-2 text-right">Amount</th>
-                    <th class="px-3 py-2 text-center">Action Controls</th>
+                    <th class="px-3 py-2 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody id="tx-tbody" class="divide-y divide-slate-100"></tbody>
@@ -595,7 +618,7 @@
             <div class="w-80 bg-white rounded-2xl shadow-xl border-2 border-slate-300 overflow-hidden text-center relative p-5">
               <div class="bg-gradient-to-r from-emerald-900 to-slate-950 -mx-5 -mt-5 p-4 text-white border-b-4 border-amber-400">
                 <h4 class="font-black text-sm uppercase">North South Pre-Cadet Academy[cite: 1]</h4>
-                <p class="text-[9px] text-amber-300">Rouha Bazar, Sarishabari, Jamalpur[cite: 1, 3]</p>
+                <p class="text-[9px] text-amber-300">Rouha Bazar, Sarishabari, Jamalpur[cite: 1]</p>
               </div>
 
               <div class="my-4">
@@ -626,7 +649,7 @@
               </div>
 
               <div class="mt-4 pt-3 border-t text-[9px] text-slate-400 flex justify-between items-center">
-                <span>Discipline • Leadership • Excellence[cite: 2]</span>
+                <span>Discipline • Leadership • Excellence</span>
                 <span class="font-bold text-slate-700">Principal Signature</span>
               </div>
             </div>
@@ -735,7 +758,7 @@
     </div>
   </div>
 
-  <!-- COMPREHENSIVE INSTRUCTOR / STAFF FORM MODAL -->
+  <!-- INSTRUCTOR & STAFF FORM MODAL WITH USERNAME & PASSWORD -->
   <div id="modal-teacher" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -745,9 +768,22 @@
 
       <form id="teacher-form" onsubmit="handleTeacherFormSubmit(event)" class="space-y-3 text-xs">
         <input type="hidden" id="edit-teacher-id">
+        
         <div>
           <label class="block font-semibold mb-1">Instructor / Staff Full Name *</label>
           <input type="text" id="form-teacher-name" required class="w-full border rounded-lg p-2" placeholder="e.g. Md. Shahidul Islam">
+        </div>
+
+        <!-- NEW USERNAME & PASSWORD BOXES -->
+        <div class="grid grid-cols-2 gap-3 bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-200">
+          <div>
+            <label class="block font-bold text-emerald-900 mb-1">System Username *</label>
+            <input type="text" id="form-teacher-username" required class="w-full border border-emerald-300 rounded-lg p-2 bg-white" placeholder="e.g. shahidul">
+          </div>
+          <div>
+            <label class="block font-bold text-emerald-900 mb-1">Account Password *</label>
+            <input type="password" id="form-teacher-password" required class="w-full border border-emerald-300 rounded-lg p-2 bg-white" placeholder="Login password">
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -786,7 +822,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold mb-1">System Role / Access *</label>
-            <select id="form-teacher-role" class="w-full border rounded-lg p-2 font-bold text-emerald-800 bg-emerald-50">
+            <select id="form-teacher-role" class="w-full border rounded-lg p-2 font-bold text-emerald-800 bg-white">
               <option value="teacher">teacher (Cadet logs & Results)</option>
               <option value="admin">admin (Super Admin: Full Control)</option>
               <option value="manager">manager (Operational Admin with SMS Log)</option>
@@ -808,8 +844,8 @@
             <input type="tel" id="form-teacher-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
           </div>
           <div>
-            <label class="block font-semibold mb-1">Email Address</label>
-            <input type="email" id="form-teacher-email" class="w-full border rounded-lg p-2" placeholder="instructor@nspacademy.edu.bd">
+            <label class="block font-semibold mb-1">Email Address (For Password Reset) *</label>
+            <input type="email" id="form-teacher-email" required class="w-full border rounded-lg p-2" placeholder="instructor@nspacademy.edu.bd">
           </div>
         </div>
 
@@ -931,9 +967,27 @@
         }
       ],
       teachers: [
-        { id: 201, name: "Capt. M. A. Rahman", role: "manager", designation: "Chief Drill Instructor", subject: "Military Drill & Discipline", phone: "01711001122", salary: 28000, blood: "B+", nid: "1983002299", dob: "1985-05-12", father: "Late M. Rahman", presentAddress: "Campus Quarters", permanentAddress: "Jamalpur" },
-        { id: 202, name: "Nasreen Akter", role: "teacher", designation: "Assistant Teacher", subject: "English & Spoken", phone: "01822334455", salary: 22000, blood: "A+", nid: "1989004455", dob: "1990-08-20", father: "Nazrul Islam", presentAddress: "Sarishabari", permanentAddress: "Sarishabari" },
-        { id: 203, name: "Mahmud Hasan", role: "accounts", designation: "Accounts Executive", subject: "Finance & Math", phone: "01933445566", salary: 24000, blood: "O+", nid: "1992003311", dob: "1992-02-14", father: "Khorshed Alam", presentAddress: "Rouha Bazar", permanentAddress: "Sarishabari" }
+        { 
+          id: 201, name: "Capt. M. A. Rahman", username: "capt_rahman", password: "123", role: "manager", 
+          designation: "Chief Drill Instructor", subject: "Military Drill & Discipline", 
+          phone: "01711001122", email: "rahman@nspacademy.edu.bd", salary: 28000, 
+          blood: "B+", nid: "1983002299", dob: "1985-05-12", father: "Late M. Rahman", 
+          presentAddress: "Campus Quarters", permanentAddress: "Jamalpur" 
+        },
+        { 
+          id: 202, name: "Nasreen Akter", username: "nasreen", password: "123", role: "teacher", 
+          designation: "Assistant Teacher", subject: "English & Spoken", 
+          phone: "01822334455", email: "nasreen@nspacademy.edu.bd", salary: 22000, 
+          blood: "A+", nid: "1989004455", dob: "1990-08-20", father: "Nazrul Islam", 
+          presentAddress: "Sarishabari", permanentAddress: "Sarishabari" 
+        },
+        { 
+          id: 203, name: "Mahmud Hasan", username: "mahmud", password: "123", role: "accounts", 
+          designation: "Accounts Executive", subject: "Finance & Math", 
+          phone: "01933445566", email: "mahmud@nspacademy.edu.bd", salary: 24000, 
+          blood: "O+", nid: "1992003311", dob: "1992-02-14", father: "Khorshed Alam", 
+          presentAddress: "Rouha Bazar", permanentAddress: "Sarishabari" 
+        }
       ],
       results: [
         { id: "RES101", cadetId: 101, name: "Tanvir Ahmed", class: "Class 7", term: "Mid Term Examination", bangla: 85, english: 88, math: 92, drill: 95, gpa: "5.00", grade: "A+" },
@@ -952,8 +1006,10 @@
     let analyticsChartInstance = null;
     let pendingTxDeleteId = null;
     let generatedOtp = null;
+    let recoveryEmailAccount = null;
+    let generatedPasswordPin = null;
 
-    // Synchronize Reactive DB
+    // Database Sync
     function saveState() {
       localStorage.setItem('north_south_db', JSON.stringify(appState));
       refreshAllSystemViews();
@@ -971,7 +1027,7 @@
       if(analyticsChartInstance) initChart();
     }
 
-    // Automated 5-Minute Auto Refresh Timer
+    // 5-Minute Auto Refresh Timer
     setInterval(() => {
       appState = JSON.parse(localStorage.getItem('north_south_db')) || DEFAULT_DATA;
       refreshAllSystemViews();
@@ -984,29 +1040,43 @@
           syncElem.classList.add('bg-blue-50', 'text-blue-600');
         }, 1500);
       }
-    }, 300000); // 300,000ms = 5 minutes
+    }, 300000);
 
-    // Authentication Handlers
+    // Dynamic Login
     function handleAuthLogin(e) {
       e.preventDefault();
       const u = document.getElementById('auth-user').value.trim();
       const p = document.getElementById('auth-pass').value.trim();
       const err = document.getElementById('login-error');
 
-      // Predefined and Dynamic DB User Login
+      // 1. Super Admin Check
       if (u === 'admin' && p === 'admin123') {
         currentUser = { username: 'Super Administrator', role: 'admin' };
-      } else if (u === 'manager' && p === 'manager123') {
+      } 
+      // 2. Default Roles Check
+      else if (u === 'manager' && p === 'manager123') {
         currentUser = { username: 'Academy Manager', role: 'manager' };
       } else if (u === 'accounts' && p === 'accounts123') {
         currentUser = { username: 'Head of Accounts', role: 'accounts' };
       } else if (u === 'teacher' && p === 'teacher123') {
         currentUser = { username: 'Faculty Teacher', role: 'teacher' };
-      } else {
-        // Match from Instructors Database
-        const matched = appState.teachers.find(t => (t.id.toString() === u || t.phone === u));
-        if(matched && p === '123456') {
-          currentUser = { username: matched.name, role: matched.role || 'teacher', id: matched.id };
+      } 
+      // 3. Dynamic Database Users Check (by Username, Staff ID or Phone)
+      else {
+        const matched = appState.teachers.find(t => 
+          (t.username && t.username.toLowerCase() === u.toLowerCase()) || 
+          t.id.toString() === u || 
+          `#ST-${t.id}` === u ||
+          t.phone === u
+        );
+
+        if (matched && matched.password === p) {
+          currentUser = { 
+            username: matched.name, 
+            role: matched.role || 'teacher', 
+            id: matched.id, 
+            staffId: `#ST-${matched.id}` 
+          };
         } else {
           err.innerText = "Invalid Username, User ID or Password!";
           err.classList.remove('hidden');
@@ -1018,16 +1088,52 @@
       initAppView();
     }
 
+    // Password Recovery Flow
     function showResetBox(show) {
       document.getElementById('login-box').classList.toggle('hidden', show);
       document.getElementById('reset-box').classList.toggle('hidden', !show);
+      document.getElementById('new-password-box').classList.add('hidden');
     }
 
-    function handlePasswordReset(e) {
+    function handlePasswordResetRequest(e) {
       e.preventDefault();
-      const email = document.getElementById('reset-email').value;
-      alert(`Instructions & verification PIN dispatched to: ${email}`);
-      showResetBox(false);
+      const email = document.getElementById('reset-email').value.trim().toLowerCase();
+      
+      const user = appState.teachers.find(t => t.email && t.email.toLowerCase() === email);
+      
+      if(email === 'admin@northsouthacademy.edu.bd' || user) {
+        recoveryEmailAccount = user || { username: 'admin', email: email };
+        generatedPasswordPin = Math.floor(1000 + Math.random() * 9000).toString();
+        
+        document.getElementById('reset-box').classList.add('hidden');
+        document.getElementById('new-password-box').classList.remove('hidden');
+        document.getElementById('otp-alert-text').innerText = `Recovery PIN generated & sent to ${email}: [PIN: ${generatedPasswordPin}]`;
+        alert(`Password Recovery PIN sent to ${email}!\nVerification PIN: ${generatedPasswordPin}`);
+      } else {
+        alert("This email address is not registered in the school database!");
+      }
+    }
+
+    function handlePasswordUpdateSubmit(e) {
+      e.preventDefault();
+      const pin = document.getElementById('input-verify-pin').value.trim();
+      const newPass = document.getElementById('input-new-pass').value.trim();
+
+      if(pin === generatedPasswordPin && recoveryEmailAccount) {
+        if(recoveryEmailAccount.username === 'admin') {
+          alert("Default Super Admin password reset simulated! Please login with your new password.");
+        } else {
+          const target = appState.teachers.find(t => t.id === recoveryEmailAccount.id);
+          if(target) {
+            target.password = newPass;
+            saveState();
+          }
+          alert(`Password successfully updated for ${recoveryEmailAccount.name}! Please login.`);
+        }
+        showResetBox(false);
+      } else {
+        alert("Invalid 4-digit PIN! Please enter the exact PIN provided.");
+      }
     }
 
     function logoutSession() {
@@ -1048,39 +1154,34 @@
       initChart();
     }
 
-    // Role-Based Access Control (RBAC) Logic
+    // Role-Based UI Controls
     function applyRoleAccessPermissions() {
       const r = currentUser.role;
       const isAdmin = (r === 'admin');
       const isManager = (r === 'manager');
       const isAccounts = (r === 'accounts');
       const isTeacher = (r === 'teacher');
-      const isStaff = (r === 'staff');
-      const isStudent = (r === 'student');
 
-      // Element Controls
       const btnAddCadet = document.getElementById('btn-add-cadet');
       const btnAddTeacher = document.getElementById('btn-add-teacher');
       const btnAddResult = document.getElementById('btn-add-result');
 
+      // Admin & Manager both can register instructors/cadets
       if (btnAddCadet) btnAddCadet.style.display = (isAdmin || isManager) ? 'flex' : 'none';
-      if (btnAddTeacher) btnAddTeacher.style.display = (isAdmin) ? 'flex' : 'none';
+      if (btnAddTeacher) btnAddTeacher.style.display = (isAdmin || isManager) ? 'flex' : 'none';
       if (btnAddResult) btnAddResult.style.display = (isAdmin || isManager || isTeacher) ? 'flex' : 'none';
 
-      // Sidebar view restrictions
       document.getElementById('nav-accounts').style.display = (isAdmin || isManager || isAccounts) ? 'flex' : 'none';
       document.getElementById('nav-teachers').style.display = (isAdmin || isManager) ? 'flex' : 'none';
       document.getElementById('nav-idcards').style.display = (isAdmin || isManager) ? 'flex' : 'none';
       document.getElementById('nav-notices').style.display = (isAdmin || isManager) ? 'flex' : 'none';
 
-      // Mobile items
       const mobAccounts = document.getElementById('mob-accounts');
       const mobTeachers = document.getElementById('mob-teachers');
       if (mobAccounts) mobAccounts.style.display = (isAdmin || isManager || isAccounts) ? 'flex' : 'none';
       if (mobTeachers) mobTeachers.style.display = (isAdmin || isManager) ? 'flex' : 'none';
     }
 
-    // Routing
     function navigateView(viewName) {
       const views = ['dashboard', 'students', 'teachers', 'attendance', 'results', 'accounts', 'notices', 'idcards'];
       views.forEach(v => {
@@ -1229,31 +1330,31 @@
       toggleModal('modal-cadet');
     }
 
-    // INSTRUCTOR & STAFF OPERATIONS
+    // INSTRUCTOR & STAFF OPERATIONS (WITH USERNAME & PASSWORD)
     function renderTeacherTable() {
       const tbody = document.getElementById('teacher-tbody');
       tbody.innerHTML = '';
-      const isAdmin = currentUser && currentUser.role === 'admin';
+      const canManage = currentUser && (currentUser.role === 'admin' || currentUser.role === 'manager');
 
       appState.teachers.forEach(t => {
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50 border-b">
             <td class="px-4 py-3 font-bold text-slate-800">#ST-${t.id}</td>
             <td class="px-4 py-3 font-semibold text-slate-900">${t.name}</td>
+            <td class="px-4 py-3 font-mono text-emerald-800 font-bold">${t.username || 'N/A'}</td>
             <td class="px-4 py-3">
               <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${t.role === 'admin' ? 'bg-red-100 text-red-800' : t.role === 'manager' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
                 ${t.role || 'teacher'}
               </span>
             </td>
             <td class="px-4 py-3 text-slate-700">${t.designation}</td>
-            <td class="px-4 py-3"><span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-[11px] font-bold">${t.subject}</span></td>
             <td class="px-4 py-3">${t.phone}</td>
             <td class="px-4 py-3 font-bold text-emerald-700">৳ ${t.salary.toLocaleString()}</td>
             <td class="px-4 py-3 text-center space-x-1 whitespace-nowrap">
-              ${isAdmin ? `
+              ${canManage ? `
                 <button onclick="editTeacher(${t.id})" class="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i></button>
                 <button onclick="deleteTeacher(${t.id})" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 px-2 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i></button>
-              ` : '<span class="text-slate-400">Restricted</span>'}
+              ` : '<span class="text-slate-400">View Only</span>'}
             </td>
           </tr>
         `;
@@ -1273,6 +1374,8 @@
       document.getElementById('modal-teacher-title').innerText = `Edit Teacher (#ST-${t.id})`;
       document.getElementById('edit-teacher-id').value = t.id;
       document.getElementById('form-teacher-name').value = t.name;
+      document.getElementById('form-teacher-username').value = t.username || '';
+      document.getElementById('form-teacher-password').value = t.password || '';
       document.getElementById('form-teacher-father').value = t.father || '';
       document.getElementById('form-teacher-dob').value = t.dob || '';
       document.getElementById('form-teacher-nid').value = t.nid || '';
@@ -1290,6 +1393,9 @@
 
     function deleteTeacher(id) {
       if(confirm(`Remove instructor #ST-${id} from ERP directory?`)) {
+        if(currentUser.role === 'manager') {
+          notifyAdminWhatsApp(`[Security Alert: Deletion Log]\nManager ${currentUser.username} removed Instructor ID #ST-${id} at ${new Date().toLocaleTimeString()}`);
+        }
         appState.teachers = appState.teachers.filter(t => t.id !== id);
         saveState();
       }
@@ -1300,6 +1406,8 @@
       const editId = document.getElementById('edit-teacher-id').value;
       const data = {
         name: document.getElementById('form-teacher-name').value,
+        username: document.getElementById('form-teacher-username').value.trim(),
+        password: document.getElementById('form-teacher-password').value.trim(),
         father: document.getElementById('form-teacher-father').value,
         dob: document.getElementById('form-teacher-dob').value,
         nid: document.getElementById('form-teacher-nid').value,
@@ -1309,7 +1417,7 @@
         role: document.getElementById('form-teacher-role').value,
         salary: Number(document.getElementById('form-teacher-salary').value),
         phone: document.getElementById('form-teacher-phone').value,
-        email: document.getElementById('form-teacher-email').value,
+        email: document.getElementById('form-teacher-email').value.trim(),
         presentAddress: document.getElementById('form-teacher-present-address').value,
         permanentAddress: document.getElementById('form-teacher-permanent-address').value
       };
@@ -1320,6 +1428,7 @@
       } else {
         const newId = 200 + appState.teachers.length + 1;
         appState.teachers.push({ id: newId, ...data });
+        alert(`Account created successfully!\nAssigned Staff ID: #ST-${newId}\nUsername: ${data.username}`);
       }
 
       saveState();
