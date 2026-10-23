@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>North South Pre-Cadet Academy ERP</title>
+  <title>North South Pre-Cadet Academy - Institutional ERP</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome 6 -->
+  <!-- FontAwesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -27,20 +27,33 @@
   <style>
     @media print {
       body * { visibility: hidden; }
-      #print-area, #print-area * { visibility: visible; }
-      #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+      #print-area, #print-area *, #result-print-area, #result-print-area * { visibility: visible; }
+      #print-area, #result-print-area { position: absolute; left: 0; top: 0; width: 100%; }
     }
     .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    
+    /* Smooth Continuous Notice Ticker Animation */
+    @keyframes marqueeScroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    .animate-ticker {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marqueeScroll 25s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
   </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased h-screen overflow-hidden flex flex-col pb-16 md:pb-0">
 
-  <!-- ================= AUTHENTICATION MODAL / SCREEN ================= -->
+  <!-- ================= AUTHENTICATION / LOGIN VIEW ================= -->
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-950 via-cadetNavy to-emerald-950 p-4">
     <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 w-full max-w-md p-7 relative overflow-hidden">
       
-      <!-- Login View -->
       <div id="login-box">
         <div class="text-center">
           <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border-2 border-amber-400 flex items-center justify-center shadow-lg mb-2">
@@ -48,7 +61,7 @@
           </div>
           <h1 class="text-lg font-black text-slate-900 uppercase">North South</h1>
           <p class="text-xs font-semibold text-emerald-800 tracking-wider">PRE-CADET ACADEMY</p>
-          <p class="text-[10px] text-slate-500">Discipline • Leadership • Excellence</p>
+          <p class="text-[10px] text-slate-500">Discipline • Leadership • Excellence[span_6](start_span)[span_6](end_span)</p>
         </div>
 
         <form id="login-form" onsubmit="handleAuthLogin(event)" class="mt-5 space-y-3.5 text-xs">
@@ -78,17 +91,15 @@
           </button>
         </form>
 
-        <!-- Brand Footer -->
         <div class="mt-6 border-t pt-3 text-center text-xs text-slate-600 font-semibold tracking-wide">
           Development by <span class="text-emerald-800 font-bold">@Atiq Enterprise IT Ltd.</span>
         </div>
       </div>
 
-      <!-- Password Reset View -->
       <div id="reset-box" class="hidden text-xs">
         <div class="text-center mb-4">
           <h2 class="text-base font-bold text-slate-800">Password Reset Request</h2>
-          <p class="text-[11px] text-slate-500">Enter your email address to receive reset PIN</p>
+          <p class="text-[11px] text-slate-500">Enter your registered email address</p>
         </div>
         <form onsubmit="handlePasswordReset(event)" class="space-y-3">
           <div>
@@ -107,7 +118,7 @@
     </div>
   </div>
 
-  <!-- ================= MAIN APP WORKSPACE ================= -->
+  <!-- ================= MAIN SYSTEM WORKSPACE ================= -->
   <div id="app-workspace" class="hidden flex h-screen overflow-hidden">
 
     <!-- Desktop Sidebar -->
@@ -118,31 +129,40 @@
             NS
           </div>
           <div class="overflow-hidden">
-            <h2 class="text-xs font-black text-white uppercase truncate">North South Academy</h2>
-            <p class="text-[10px] text-emerald-400 font-semibold truncate"><i class="fa-solid fa-location-dot"></i> Rouha Bazar, Sarishabari</p>
+            <h2 class="text-xs font-black text-white uppercase truncate">North South Academy[span_7](start_span)[span_7](end_span)</h2>
+            <p class="text-[10px] text-emerald-400 font-semibold truncate"><i class="fa-solid fa-location-dot"></i> Rouha Bazar, Sarishabari[span_8](start_span)[span_8](end_span)</p>
           </div>
         </div>
 
-        <nav class="p-3 space-y-1.5 text-xs">
-          <button onclick="navigateView('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-emerald-800 text-white font-semibold transition">
+        <nav class="p-3 space-y-1 text-xs">
+          <button onclick="navigateView('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-emerald-800 text-white font-semibold transition">
             <i class="fa-solid fa-chart-line w-4"></i> Dashboard
           </button>
-          <button onclick="navigateView('students')" id="nav-students" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+          <button onclick="navigateView('students')" id="nav-students" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-user-graduate w-4"></i> Cadet Database
           </button>
-          <button onclick="navigateView('attendance')" id="nav-attendance" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+          <button onclick="navigateView('teachers')" id="nav-teachers" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-chalkboard-user w-4"></i> Teachers Directory[span_9](start_span)[span_9](end_span)
+          </button>
+          <button onclick="navigateView('attendance')" id="nav-attendance" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-clipboard-user w-4"></i> Daily Attendance
           </button>
-          <button onclick="navigateView('fees')" id="nav-fees" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
-            <i class="fa-solid fa-bangladeshi-taka-sign w-4"></i> Fees & Billing
+          <button onclick="navigateView('results')" id="nav-results" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-file-invoice w-4"></i> Exam & Result Cards
           </button>
-          <button onclick="navigateView('idcards')" id="nav-idcards" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+          <button onclick="navigateView('accounts')" id="nav-accounts" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-scale-balanced w-4"></i> Accounts & Payroll
+          </button>
+          <button onclick="navigateView('notices')" id="nav-notices" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
+            <i class="fa-solid fa-bullhorn w-4"></i> Notice Manager
+          </button>
+          <button onclick="navigateView('idcards')" id="nav-idcards" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition">
             <i class="fa-solid fa-id-card-clip w-4"></i> Cadet ID Card
           </button>
         </nav>
       </div>
 
-      <!-- User Profile Card -->
+      <!-- User Card -->
       <div class="p-4 border-t border-slate-800 bg-slate-900/70 flex items-center justify-between text-xs">
         <div>
           <span id="current-user-name" class="font-bold text-white block">Administrator</span>
@@ -154,75 +174,100 @@
       </div>
     </aside>
 
-    <!-- Main Workspace Container -->
+    <!-- Content Workspace -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
       
-      <!-- Top Bar -->
-      <header class="bg-white border-b border-slate-200 px-4 md:px-6 py-3 flex items-center justify-between shadow-sm shrink-0">
+      <!-- Top Action Bar -->
+      <header class="bg-white border-b border-slate-200 px-4 md:px-6 py-2.5 flex items-center justify-between shadow-sm shrink-0">
         <div class="flex items-center gap-2">
           <h2 id="top-title" class="font-bold text-slate-800 text-sm md:text-base">Executive Dashboard</h2>
-          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">2026-27</span>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Academic Year 2026-27</span>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3">
           <div class="hidden sm:flex text-right flex-col text-[11px] text-slate-500">
-            <span>Official Helpline: +880 1742-955450</span>
+            <span>Helpline: +880 1742-955450[span_10](start_span)[span_10](end_span)</span>
             <span class="text-emerald-700 font-bold">WhatsApp Billing: +8801689333000</span>
           </div>
-          <button onclick="logoutSession()" class="text-xs bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg font-bold hover:bg-red-600 hover:text-white transition">
+          <button onclick="logoutSession()" class="text-xs bg-red-50 text-red-600 border border-red-200 px-3 py-1 rounded-lg font-bold hover:bg-red-600 hover:text-white transition">
             Logout
           </button>
         </div>
       </header>
 
-      <!-- Main Scrollable Body -->
+      <!-- AUTO-SCROLLING NOTICE TICKER BOARD -->
+      <div class="bg-amber-400 text-slate-950 px-4 py-1.5 flex items-center gap-3 shadow-inner overflow-hidden shrink-0 border-b border-amber-500">
+        <span class="bg-red-700 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded shadow tracking-wider shrink-0 flex items-center gap-1">
+          <i class="fa-solid fa-bell animate-bounce"></i> Notice
+        </span>
+        <div class="overflow-hidden w-full relative">
+          <div id="ticker-content" class="animate-ticker text-xs font-bold text-slate-900 tracking-wide">
+            Welcome to North South Pre-Cadet Academy ERP portal. Admissions for Class Play to Class 7 are ongoing!
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Body Container -->
       <main class="flex-1 p-4 md:p-6 overflow-y-auto custom-scroll bg-slate-50">
 
         <!-- 1. DASHBOARD -->
         <section id="view-dashboard" class="space-y-5">
           <div class="bg-gradient-to-r from-slate-950 via-cadetNavy to-emerald-900 rounded-2xl p-5 md:p-6 text-white shadow-lg relative overflow-hidden">
             <span class="bg-amber-400/20 text-amber-300 text-[11px] px-2.5 py-0.5 rounded font-bold border border-amber-400/30 uppercase tracking-wide">
-              Military Style Discipline & Excellence
+              Discipline • Leadership • Excellence[span_11](start_span)[span_11](end_span)
             </span>
-            <h2 class="text-xl md:text-2xl font-black mt-2">North South Pre-Cadet Academy</h2>
-            <p class="text-xs text-slate-300 mt-1">Rouha Bazar, Sarishabari, Jamalpur, Bangladesh, 2050</p>
+            <h2 class="text-xl md:text-2xl font-black mt-2">North South Pre-Cadet Academy[span_12](start_span)[span_12](end_span)</h2>
+            <p class="text-xs text-slate-300 mt-1">Rouha Bazar, Sarishabari, Jamalpur, Bangladesh, 2050[span_13](start_span)[span_13](end_span)</p>
           </div>
 
-          <!-- Quick Metrics -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <!-- Top Metric Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
-                <p class="text-xs text-slate-500 font-semibold uppercase">Total Cadets</p>
-                <h3 id="stat-cadets" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase">Total Cadets</p>
+                <h3 id="stat-cadets" class="text-xl font-bold text-slate-900 mt-1">0</h3>
               </div>
-              <div class="w-11 h-11 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg">
+              <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-base">
                 <i class="fa-solid fa-user-graduate"></i>
               </div>
             </div>
-            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
-                <p class="text-xs text-slate-500 font-semibold uppercase">Today Attendance</p>
-                <h3 id="stat-att-rate" class="text-2xl font-bold text-emerald-600 mt-1">0%</h3>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase">Faculty Staff</p>
+                <h3 id="stat-teachers" class="text-xl font-bold text-slate-900 mt-1">0</h3>
               </div>
-              <div class="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg">
+              <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center text-base">
+                <i class="fa-solid fa-chalkboard-user"></i>
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase">Parade Attendance</p>
+                <h3 id="stat-att-rate" class="text-xl font-bold text-emerald-600 mt-1">0%</h3>
+              </div>
+              <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-base">
                 <i class="fa-solid fa-user-check"></i>
               </div>
             </div>
-            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
-                <p class="text-xs text-slate-500 font-semibold uppercase">Total Revenue</p>
-                <h3 id="stat-fees-collected" class="text-2xl font-bold text-amber-600 mt-1">৳ 0</h3>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase">Total Inflow</p>
+                <h3 id="stat-inflow" class="text-xl font-bold text-amber-600 mt-1">৳ 0</h3>
               </div>
-              <div class="w-11 h-11 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg">
-                <i class="fa-solid fa-money-bill-wave"></i>
+              <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-base">
+                <i class="fa-solid fa-wallet"></i>
               </div>
             </div>
-            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between col-span-2 sm:col-span-1">
               <div>
-                <p class="text-xs text-slate-500 font-semibold uppercase">Admin Clearance</p>
-                <h3 id="stat-role-status" class="text-2xl font-bold text-purple-600 mt-1">Full Control</h3>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase">Salary Outflow</p>
+                <h3 id="stat-outflow" class="text-xl font-bold text-red-600 mt-1">৳ 0</h3>
               </div>
-              <div class="w-11 h-11 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg">
-                <i class="fa-solid fa-key"></i>
+              <div class="w-10 h-10 bg-red-50 text-red-600 rounded-lg flex items-center justify-center text-base">
+                <i class="fa-solid fa-money-bill-transfer"></i>
               </div>
             </div>
           </div>
@@ -230,7 +275,7 @@
           <!-- Dynamic Graph -->
           <div class="bg-white p-4 md:p-6 rounded-xl border border-slate-200 shadow-sm">
             <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
-              <span>Operational Growth & Cash-Flow</span>
+              <span>Institution Financials & Attendance Flow</span>
               <span class="text-xs text-slate-400 font-normal">Real-Time Data Feed</span>
             </h3>
             <div class="h-64">
@@ -239,7 +284,7 @@
           </div>
         </section>
 
-        <!-- 2. CADETS / STUDENTS CRUD (COMPREHENSIVE) -->
+        <!-- 2. CADETS / STUDENTS CRUD -->
         <section id="view-students" class="hidden space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -248,7 +293,7 @@
                 <i class="fa-solid fa-download"></i> CSV
               </button>
             </div>
-            <button id="btn-add-cadet" onclick="openStudentModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2.5 rounded-lg font-bold flex items-center gap-2 w-full sm:w-auto justify-center">
+            <button id="btn-add-cadet" onclick="openStudentModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2 w-full sm:w-auto justify-center">
               <i class="fa-solid fa-user-plus"></i> Enroll New Cadet
             </button>
           </div>
@@ -261,10 +306,10 @@
                     <th class="px-4 py-3">Cadet ID</th>
                     <th class="px-4 py-3">Full Name</th>
                     <th class="px-4 py-3">Class</th>
-                    <th class="px-4 py-3">Main Guardian</th>
-                    <th class="px-4 py-3">Contact</th>
+                    <th class="px-4 py-3">Guardian</th>
+                    <th class="px-4 py-3">Phone</th>
                     <th class="px-4 py-3">Blood</th>
-                    <th class="px-4 py-3 text-center">Action Controls</th>
+                    <th class="px-4 py-3 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody id="student-tbody" class="divide-y divide-slate-100"></tbody>
@@ -273,34 +318,64 @@
           </div>
         </section>
 
-        <!-- 3. ATTENDANCE (CLASS-WISE GRID & DIRECT FILTER) -->
-        <section id="view-attendance" class="hidden space-y-4">
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+        <!-- 3. TEACHERS & STAFF MODULE -->
+        <section id="view-teachers" class="hidden space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <h3 class="font-bold text-slate-800 text-sm">Parade & Daily Attendance Log</h3>
-              <p class="text-xs text-slate-500">Record attendance for today's drill & auto-dispatch absent notices</p>
+              <h3 class="font-bold text-slate-800 text-sm">Faculty & Administrative Personnel[span_14](start_span)[span_14](end_span)</h3>
+              <p class="text-xs text-slate-500">Manage academic instructors & designated staff[span_15](start_span)[span_15](end_span)</p>
             </div>
-            <button onclick="commitAttendance()" class="bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-emerald-800">
-              <i class="fa-solid fa-check-double"></i> Save Attendance & Notify Absent
+            <button id="btn-add-teacher" onclick="openTeacherModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+              <i class="fa-solid fa-plus"></i> Add New Instructor
             </button>
           </div>
 
-          <!-- Class-wise Attendance Metric Grid -->
-          <div class="space-y-2">
-            <div class="flex justify-between items-center">
-              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide">Class Attendance Breakdown (Click to Filter)</h4>
-              <button onclick="filterAttendanceClass('All')" class="text-[11px] text-emerald-700 hover:underline font-bold">Show All Classes</button>
-            </div>
-            <div id="class-attendance-cards" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2">
-              <!-- Dynamically populated classes -->
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-100 text-slate-700 font-bold uppercase border-b border-slate-200">
+                  <tr>
+                    <th class="px-4 py-3">Staff ID</th>
+                    <th class="px-4 py-3">Teacher Name</th>
+                    <th class="px-4 py-3">Designation</th>
+                    <th class="px-4 py-3">Subject / Drill</th>
+                    <th class="px-4 py-3">Contact</th>
+                    <th class="px-4 py-3">Base Salary</th>
+                    <th class="px-4 py-3 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="teacher-tbody" class="divide-y divide-slate-100"></tbody>
+              </table>
             </div>
           </div>
+        </section>
 
-          <!-- Attendance Cadet Table -->
+        <!-- 4. ATTENDANCE & PARADE DRILL -->
+        <section id="view-attendance" class="hidden space-y-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Parade & Daily Drill Attendance</h3>
+              <p class="text-xs text-slate-500">Select class breakdown below to view cadets & send absent alerts</p>
+            </div>
+            <button onclick="commitAttendance()" class="bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-emerald-800">
+              <i class="fa-solid fa-check-double"></i> Save Drill Attendance
+            </button>
+          </div>
+
+          <!-- Class-wise Cards -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide">Class Attendance Breakdown</h4>
+              <button onclick="filterAttendanceClass('All')" class="text-[11px] text-emerald-700 hover:underline font-bold">Show All Classes</button>
+            </div>
+            <div id="class-attendance-cards" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2"></div>
+          </div>
+
+          <!-- Cadet Roll Sheet -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-3 bg-slate-50 border-b flex justify-between items-center text-xs">
               <span class="font-bold text-slate-700" id="att-filter-label">Displaying: All Classes</span>
-              <span class="text-slate-500">Uncheck to mark Absent</span>
+              <span class="text-slate-500">Uncheck checkbox to flag Absent</span>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
@@ -320,12 +395,83 @@
           </div>
         </section>
 
-        <!-- 4. FEES & ACCOUNTS -->
-        <section id="view-fees" class="hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm text-xs">
-              <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-2">Receive Student Fees</h4>
-              <p class="text-[11px] text-emerald-700 mb-3 font-semibold"><i class="fa-brands fa-whatsapp text-emerald-600"></i> Auto alert sent to WhatsApp (+8801689333000)</p>
+        <!-- 5. STUDENT EXAM & RESULT CARDS -->
+        <section id="view-results" class="hidden space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Examinations & Terminal Progress Card</h3>
+              <p class="text-xs text-slate-500">Enter subject scores & generate official cadet grade sheets</p>
+            </div>
+            <button id="btn-add-result" onclick="openResultModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+              <i class="fa-solid fa-pen-nib"></i> Add / Record Marks
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-100 text-slate-700 font-bold uppercase border-b border-slate-200">
+                  <tr>
+                    <th class="px-4 py-3">Cadet ID</th>
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Class</th>
+                    <th class="px-4 py-3">Exam Term</th>
+                    <th class="px-4 py-3 text-center">GPA / Grade</th>
+                    <th class="px-4 py-3 text-center">Marksheet</th>
+                  </tr>
+                </thead>
+                <tbody id="result-tbody" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Printable Result Sheet View Modal -->
+          <div id="modal-marksheet-preview" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
+              <div class="flex justify-between items-center mb-3 border-b pb-2">
+                <h4 class="font-bold text-slate-800 text-sm">Official Academic Transcript</h4>
+                <div class="space-x-2">
+                  <button onclick="window.print()" class="bg-slate-900 text-white text-xs px-3 py-1 rounded font-bold"><i class="fa-solid fa-print"></i> Print</button>
+                  <button onclick="toggleModal('modal-marksheet-preview')" class="text-slate-400 hover:text-slate-600 text-base"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+              </div>
+              <div id="result-print-area" class="p-4 border rounded-xl bg-white space-y-4 text-xs">
+                <div class="text-center border-b pb-3">
+                  <h3 class="font-black text-sm uppercase text-slate-900">North South Pre-Cadet Academy[span_16](start_span)[span_16](end_span)</h3>
+                  <p class="text-[10px] text-slate-600">Rouha Bazar, Sarishabari, Jamalpur[span_17](start_span)[span_17](end_span)</p>
+                  <h4 class="text-xs font-bold text-emerald-800 mt-1 uppercase" id="card-term">Terminal Examination Progress Card</h4>
+                </div>
+                <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-lg border text-[11px]">
+                  <div><strong>Cadet Name:</strong> <span id="card-cadet-name"></span></div>
+                  <div><strong>Cadet ID:</strong> <span id="card-cadet-id"></span></div>
+                  <div><strong>Class:</strong> <span id="card-cadet-class"></span></div>
+                  <div><strong>Final Grade:</strong> <span id="card-cadet-grade" class="font-bold text-emerald-700"></span></div>
+                </div>
+                <table class="w-full text-left border border-slate-200">
+                  <thead class="bg-slate-100 border-b">
+                    <tr><th class="p-2">Subject</th><th class="p-2 text-center">Marks</th><th class="p-2 text-center">Grade</th></tr>
+                  </thead>
+                  <tbody id="card-subjects-body" class="divide-y divide-slate-100"></tbody>
+                </table>
+                <div class="pt-6 flex justify-between text-[10px] text-slate-500 font-semibold">
+                  <span>Class Teacher Signature</span>
+                  <span>Principal Signature</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. ACCOUNTS & TEACHER PAYROLL -->
+        <section id="view-accounts" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Receive Student Fees -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
+              <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-down-long text-emerald-600"></i> Receive Student Tuition Fee
+              </h4>
+              <p class="text-[11px] text-emerald-700 font-semibold"><i class="fa-brands fa-whatsapp text-emerald-600"></i> WhatsApp alerts auto-sent to +8801689333000</p>
               
               <form id="billing-form" onsubmit="handleFeePayment(event)" class="space-y-3">
                 <div>
@@ -333,59 +479,116 @@
                   <select id="bill-student" class="w-full border rounded-lg p-2" required></select>
                 </div>
                 <div>
-                  <label class="block font-semibold mb-1">Fee Purpose</label>
+                  <label class="block font-semibold mb-1">Purpose</label>
                   <select id="bill-reason" class="w-full border rounded-lg p-2">
                     <option>Monthly Tuition Fee</option>
-                    <option>New Cadet Admission Fee</option>
-                    <option>Term Exam Fee</option>
-                    <option>Cadet Uniform & Badges</option>
+                    <option>New Cadet Admission</option>
+                    <option>Exam & Assessment Fee</option>
+                    <option>Cadet Uniform & Badge</option>
                   </select>
                 </div>
-                <div>
-                  <label class="block font-semibold mb-1">Amount (BDT)</label>
-                  <input type="number" id="bill-amount" placeholder="৳ 1500" required class="w-full border rounded-lg p-2">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-semibold mb-1">Amount (BDT)</label>
+                    <input type="number" id="bill-amount" placeholder="৳ 1500" required class="w-full border rounded-lg p-2">
+                  </div>
+                  <div>
+                    <label class="block font-semibold mb-1">Channel</label>
+                    <select id="bill-method" class="w-full border rounded-lg p-2">
+                      <option>Cash Counter</option>
+                      <option>bKash</option>
+                      <option>Nagad</option>
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label class="block font-semibold mb-1">Payment Method</label>
-                  <select id="bill-method" class="w-full border rounded-lg p-2">
-                    <option>Cash Counter</option>
-                    <option>bKash</option>
-                    <option>Nagad</option>
-                  </select>
-                </div>
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg mt-2 flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-receipt"></i> Accept & Send WhatsApp Alert
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-lg mt-2 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-receipt"></i> Process Fee & Notify WhatsApp
                 </button>
               </form>
             </div>
 
-            <div class="lg:col-span-2 bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm text-xs">
-              <h4 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2">Recent Transactions</h4>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                  <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
-                    <tr>
-                      <th class="px-3 py-2">TxID</th>
-                      <th class="px-3 py-2">Cadet</th>
-                      <th class="px-3 py-2">Purpose</th>
-                      <th class="px-3 py-2">Channel</th>
-                      <th class="px-3 py-2 text-right">Amount</th>
-                      <th class="px-3 py-2 text-center">Alert</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tx-tbody" class="divide-y divide-slate-100"></tbody>
-                </table>
-              </div>
+            <!-- Teacher Payroll & Salary Outflow -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
+              <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-up-long text-red-600"></i> Disburse Faculty & Staff Salary
+              </h4>
+              <form id="payroll-form" onsubmit="handlePayrollSubmit(event)" class="space-y-3">
+                <div>
+                  <label class="block font-semibold mb-1">Select Instructor / Employee</label>
+                  <select id="salary-teacher" onchange="autoFillSalary()" class="w-full border rounded-lg p-2" required></select>
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Disbursement Month</label>
+                  <select id="salary-month" class="w-full border rounded-lg p-2">
+                    <option>January</option><option>February</option><option>March</option>
+                    <option>April</option><option>May</option><option>June</option>
+                    <option>July</option><option>August</option><option>September</option>
+                    <option>October</option><option>November</option><option>December</option>
+                  </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-semibold mb-1">Disbursed Amount (BDT)</label>
+                    <input type="number" id="salary-amount" placeholder="৳ Amount" required class="w-full border rounded-lg p-2">
+                  </div>
+                  <div>
+                    <label class="block font-semibold mb-1">Payment Method</label>
+                    <select id="salary-method" class="w-full border rounded-lg p-2">
+                      <option>Direct Cash</option>
+                      <option>Bank Transfer</option>
+                      <option>bKash Corporate</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-lg mt-2 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-hand-holding-dollar"></i> Disburse Salary & Record
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+          <!-- Transaction Ledger -->
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs">
+            <h4 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2">Central Accounts Ledger</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                  <tr>
+                    <th class="px-3 py-2">TxID</th>
+                    <th class="px-3 py-2">Type</th>
+                    <th class="px-3 py-2">Account Name</th>
+                    <th class="px-3 py-2">Category</th>
+                    <th class="px-3 py-2">Method</th>
+                    <th class="px-3 py-2 text-right">Debit / Credit</th>
+                  </tr>
+                </thead>
+                <tbody id="tx-tbody" class="divide-y divide-slate-100"></tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- 5. ID CARDS -->
+        <!-- 7. NOTICE BOARD MANAGER -->
+        <section id="view-notices" class="hidden space-y-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-xs">
+            <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-2">Publish / Update Moving Notice</h4>
+            <p class="text-slate-500 mb-3">This text will scroll horizontally at the top of the ERP portal in real-time.</p>
+            <form onsubmit="handleNoticeUpdate(event)" class="flex gap-2">
+              <input type="text" id="input-notice-text" required placeholder="Type the school announcement here..." class="flex-1 border rounded-lg p-2.5">
+              <button type="submit" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg font-bold">
+                Broadcast Notice
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- 8. CADET ID CARD GENERATOR -->
         <section id="view-idcards" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Official Cadet Identity Badge</h3>
-              <p class="text-xs text-slate-500">Official printable ID format</p>
+              <p class="text-xs text-slate-500">Cadet badge card for institutional verification</p>
             </div>
             <button onclick="window.print()" class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg font-bold">
               <i class="fa-solid fa-print"></i> Print Badge
@@ -395,8 +598,8 @@
           <div id="print-area" class="flex justify-center p-4">
             <div class="w-80 bg-white rounded-2xl shadow-xl border-2 border-slate-300 overflow-hidden text-center relative p-5">
               <div class="bg-gradient-to-r from-emerald-900 to-slate-950 -mx-5 -mt-5 p-4 text-white border-b-4 border-amber-400">
-                <h4 class="font-black text-sm uppercase">North South Pre-Cadet Academy</h4>
-                <p class="text-[9px] text-amber-300">Rouha Bazar, Sarishabari, Jamalpur</p>
+                <h4 class="font-black text-sm uppercase">North South Pre-Cadet Academy[span_18](start_span)[span_18](end_span)</h4>
+                <p class="text-[9px] text-amber-300">Rouha Bazar, Sarishabari, Jamalpur[span_19](start_span)[span_19](end_span)[span_20](start_span)[span_20](end_span)</p>
               </div>
 
               <div class="my-4">
@@ -404,7 +607,7 @@
                   <i class="fa-solid fa-user-tie text-3xl text-slate-400"></i>
                 </div>
                 <h3 class="font-black text-base text-slate-900 mt-2" id="idcard-name">Cadet Name</h3>
-                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Class 5</span>
+                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Class 7</span>
               </div>
 
               <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left text-xs space-y-1.5">
@@ -413,8 +616,8 @@
                   <span class="font-bold text-slate-800" id="idcard-id">#NS-101</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-slate-500">Father's Name:</span>
-                  <span class="font-bold text-slate-800" id="idcard-father">N/A</span>
+                  <span class="text-slate-500">Guardian Name:</span>
+                  <span class="font-bold text-slate-800" id="idcard-guardian">N/A</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-slate-500">Guardian Contact:</span>
@@ -427,7 +630,7 @@
               </div>
 
               <div class="mt-4 pt-3 border-t text-[9px] text-slate-400 flex justify-between items-center">
-                <span>Discipline • Leadership • Excellence</span>
+                <span>Discipline • Leadership • Excellence[span_21](start_span)[span_21](end_span)</span>
                 <span class="font-bold text-slate-700">Principal Signature</span>
               </div>
             </div>
@@ -436,8 +639,8 @@
 
       </main>
 
-      <!-- MOBILE BOTTOM NAVIGATION BAR -->
-      <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 flex justify-around items-center py-2 z-40 text-[10px] text-slate-400">
+      <!-- MOBILE BOTTOM NAVIGATION -->
+      <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 flex justify-around items-center py-2 z-40 text-[9px] text-slate-400">
         <button onclick="navigateView('dashboard')" id="mob-dashboard" class="flex flex-col items-center gap-1 text-emerald-400 font-bold">
           <i class="fa-solid fa-chart-line text-sm"></i>
           <span>Dashboard</span>
@@ -446,24 +649,24 @@
           <i class="fa-solid fa-user-graduate text-sm"></i>
           <span>Cadets</span>
         </button>
+        <button onclick="navigateView('teachers')" id="mob-teachers" class="flex flex-col items-center gap-1">
+          <i class="fa-solid fa-chalkboard-user text-sm"></i>
+          <span>Teachers[span_22](start_span)[span_22](end_span)</span>
+        </button>
         <button onclick="navigateView('attendance')" id="mob-attendance" class="flex flex-col items-center gap-1">
           <i class="fa-solid fa-clipboard-user text-sm"></i>
-          <span>Attendance</span>
+          <span>Parade</span>
         </button>
-        <button onclick="navigateView('fees')" id="mob-fees" class="flex flex-col items-center gap-1">
-          <i class="fa-solid fa-bangladeshi-taka-sign text-sm"></i>
-          <span>Billing</span>
-        </button>
-        <button onclick="navigateView('idcards')" id="mob-idcards" class="flex flex-col items-center gap-1">
-          <i class="fa-solid fa-id-card text-sm"></i>
-          <span>ID Card</span>
+        <button onclick="navigateView('accounts')" id="mob-accounts" class="flex flex-col items-center gap-1">
+          <i class="fa-solid fa-scale-balanced text-sm"></i>
+          <span>Accounts</span>
         </button>
       </nav>
 
     </div>
   </div>
 
-  <!-- CADET ADD / EDIT MODAL (COMPREHENSIVE INFORMATION MODAL) -->
+  <!-- CADET REGISTRATION / EDIT MODAL -->
   <div id="modal-cadet" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -473,25 +676,18 @@
 
       <form id="cadet-form" onsubmit="handleCadetFormSubmit(event)" class="space-y-3 text-xs">
         <input type="hidden" id="edit-cadet-id">
-
-        <!-- Basic Info -->
         <div>
           <label class="block font-semibold mb-1">Cadet Full Name *</label>
           <input type="text" id="form-cadet-name" required class="w-full border rounded-lg p-2" placeholder="e.g. Shakib Al Hasan">
         </div>
-
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold mb-1">Class / Grade *</label>
             <select id="form-cadet-class" class="w-full border rounded-lg p-2">
-              <option value="Play">Play</option>
-              <option value="Nursery">Nursery</option>
-              <option value="Class 1">Class 1</option>
-              <option value="Class 2">Class 2</option>
-              <option value="Class 3">Class 3</option>
-              <option value="Class 4">Class 4</option>
-              <option value="Class 5">Class 5</option>
-              <option value="Class 6">Class 6</option>
+              <option value="Play">Play</option><option value="Nursery">Nursery</option>
+              <option value="Class 1">Class 1</option><option value="Class 2">Class 2</option>
+              <option value="Class 3">Class 3</option><option value="Class 4">Class 4</option>
+              <option value="Class 5">Class 5</option><option value="Class 6">Class 6</option>
               <option value="Class 7">Class 7</option>
             </select>
           </div>
@@ -500,46 +696,38 @@
             <input type="text" id="form-cadet-blood" class="w-full border rounded-lg p-2" placeholder="e.g. B+">
           </div>
         </div>
-
-        <!-- Parents & Guardian Details -->
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold mb-1">Father's Name</label>
-            <input type="text" id="form-cadet-father" class="w-full border rounded-lg p-2" placeholder="Father's full name">
+            <input type="text" id="form-cadet-father" class="w-full border rounded-lg p-2">
           </div>
           <div>
             <label class="block font-semibold mb-1">Mother's Name</label>
-            <input type="text" id="form-cadet-mother" class="w-full border rounded-lg p-2" placeholder="Mother's full name">
+            <input type="text" id="form-cadet-mother" class="w-full border rounded-lg p-2">
           </div>
         </div>
-
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold mb-1">Main Guardian Name *</label>
-            <input type="text" id="form-cadet-guardian" required class="w-full border rounded-lg p-2" placeholder="Guardian name">
+            <input type="text" id="form-cadet-guardian" required class="w-full border rounded-lg p-2">
           </div>
           <div>
-            <label class="block font-semibold mb-1">Guardian Phone (BD 11-Digit) *</label>
+            <label class="block font-semibold mb-1">Guardian Phone *</label>
             <input type="tel" id="form-cadet-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
           </div>
         </div>
-
         <div>
-          <label class="block font-semibold mb-1">Email Address</label>
-          <input type="email" id="form-cadet-email" class="w-full border rounded-lg p-2" placeholder="cadet@example.com">
+          <label class="block font-semibold mb-1">Email</label>
+          <input type="email" id="form-cadet-email" class="w-full border rounded-lg p-2">
         </div>
-
-        <!-- Address -->
         <div>
           <label class="block font-semibold mb-1">Present Address</label>
-          <textarea id="form-cadet-present-address" rows="2" class="w-full border rounded-lg p-2" placeholder="Current address..."></textarea>
+          <textarea id="form-cadet-present-address" rows="2" class="w-full border rounded-lg p-2"></textarea>
         </div>
-
         <div>
           <label class="block font-semibold mb-1">Permanent Address</label>
-          <textarea id="form-cadet-permanent-address" rows="2" class="w-full border rounded-lg p-2" placeholder="Permanent address / village home..."></textarea>
+          <textarea id="form-cadet-permanent-address" rows="2" class="w-full border rounded-lg p-2"></textarea>
         </div>
-
         <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg mt-3 shadow">
           Save Cadet Profile
         </button>
@@ -547,13 +735,101 @@
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC WITH CENTRAL DATABASE STATE -->
+  <!-- TEACHER REGISTRATION / EDIT MODAL -->
+  <div id="modal-teacher" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4 border-b pb-2">
+        <h3 id="modal-teacher-title" class="font-bold text-slate-800 text-sm">Add New Teacher / Staff</h3>
+        <button onclick="toggleModal('modal-teacher')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="teacher-form" onsubmit="handleTeacherFormSubmit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-teacher-id">
+        <div>
+          <label class="block font-semibold mb-1">Instructor Full Name *</label>
+          <input type="text" id="form-teacher-name" required class="w-full border rounded-lg p-2" placeholder="e.g. Md. Shahidul Islam">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Designation</label>
+            <input type="text" id="form-teacher-designation" required class="w-full border rounded-lg p-2" placeholder="e.g. Senior Cadet Instructor">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Subject / Area</label>
+            <input type="text" id="form-teacher-subject" required class="w-full border rounded-lg p-2" placeholder="e.g. Mathematics / Drill">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Contact Phone</label>
+            <input type="tel" id="form-teacher-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Base Monthly Salary (BDT)</label>
+            <input type="number" id="form-teacher-salary" required class="w-full border rounded-lg p-2" placeholder="৳ 25000">
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg mt-3 shadow">
+          Save Teacher Record
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EXAM MARKS ENTRY MODAL -->
+  <div id="modal-result" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4 border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-sm">Record Cadet Examination Scores</h3>
+        <button onclick="toggleModal('modal-result')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="handleResultFormSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Cadet</label>
+          <select id="result-cadet" class="w-full border rounded-lg p-2" required></select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Exam Term</label>
+          <select id="result-term" class="w-full border rounded-lg p-2">
+            <option>1st Terminal Assessment</option>
+            <option>Mid Term Examination</option>
+            <option>Annual Final Evaluation</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Bangla (100)</label>
+            <input type="number" id="mark-bangla" required min="0" max="100" class="w-full border rounded-lg p-2" placeholder="Marks">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">English (100)</label>
+            <input type="number" id="mark-english" required min="0" max="100" class="w-full border rounded-lg p-2" placeholder="Marks">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Math (100)</label>
+            <input type="number" id="mark-math" required min="0" max="100" class="w-full border rounded-lg p-2" placeholder="Marks">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Cadet Drill/GK (100)</label>
+            <input type="number" id="mark-drill" required min="0" max="100" class="w-full border rounded-lg p-2" placeholder="Marks">
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-lg mt-2">
+          Compile & Publish Result
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION ENGINE & CLOUD STORAGE SCRIPT -->
   <script>
     const NOTIFICATION_WHATSAPP = "+8801689333000";
     const CLASSES_LIST = ["Play", "Nursery", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7"];
 
-    // Default Seed Data
+    // Central Data Model with Comprehensive Seed
     const DEFAULT_DATA = {
+      notice: "📢 North South Pre-Cadet Academy: Admission for academic session 2026-27 is ongoing! Special physical fitness & cadet training facility available. Campus: Rouha Bazar, Sarishabari.",
       students: [
         { 
           id: 101, name: "Tanvir Ahmed", class: "Class 7", blood: "O+", 
@@ -584,9 +860,19 @@
           present: true 
         }
       ],
+      teachers: [
+        { id: 201, name: "Capt. M. A. Rahman", designation: "Chief Drill Instructor", subject: "Military Drill & Discipline", phone: "01711001122", salary: 28000 },
+        { id: 202, name: "Nasreen Akter", designation: "Assistant Teacher", subject: "English & Spoken", phone: "01822334455", salary: 22000 },
+        { id: 203, name: "Mahmud Hasan", designation: "Faculty Member", subject: "General Science & Math", phone: "01933445566", salary: 24000 }
+      ],
+      results: [
+        { cadetId: 101, name: "Tanvir Ahmed", class: "Class 7", term: "Mid Term Examination", bangla: 85, english: 88, math: 92, drill: 95, gpa: "5.00", grade: "A+" },
+        { cadetId: 102, name: "Maria Sultana", class: "Class 6", term: "Mid Term Examination", bangla: 78, english: 82, math: 80, drill: 90, gpa: "4.75", grade: "A" }
+      ],
       transactions: [
-        { id: "TX1001", student: "Tanvir Ahmed", reason: "Monthly Tuition Fee", method: "bKash", amount: 1500, date: "2026-10-20" },
-        { id: "TX1002", student: "Maria Sultana", reason: "Monthly Tuition Fee", method: "Cash Counter", amount: 1500, date: "2026-10-21" }
+        { id: "TX1001", type: "INFLOW", entity: "Tanvir Ahmed", reason: "Monthly Tuition Fee", method: "bKash", amount: 1500, date: "2026-10-20" },
+        { id: "TX1002", type: "INFLOW", entity: "Maria Sultana", reason: "Monthly Tuition Fee", method: "Cash Counter", amount: 1500, date: "2026-10-21" },
+        { id: "TX5001", type: "OUTFLOW", entity: "Capt. M. A. Rahman", reason: "Faculty Salary: September", method: "Bank Transfer", amount: 28000, date: "2026-10-01" }
       ]
     };
 
@@ -595,7 +881,7 @@
     let activeAttendanceClassFilter = "All";
     let analyticsChartInstance = null;
 
-    // Central State Persistence & Synchronized Trigger
+    // Central Database Storage Synchronization
     function saveState() {
       localStorage.setItem('north_south_db', JSON.stringify(appState));
       refreshAllSystemViews();
@@ -604,9 +890,12 @@
     function refreshAllSystemViews() {
       updateDashboardStats();
       renderStudentTable();
+      renderTeacherTable();
       renderAttendanceView();
+      renderResultTable();
       renderTransactions();
-      populateStudentDropdown();
+      populateDropdowns();
+      document.getElementById('ticker-content').innerText = appState.notice;
       if(analyticsChartInstance) initChart();
     }
 
@@ -639,7 +928,7 @@
     function handlePasswordReset(e) {
       e.preventDefault();
       const email = document.getElementById('reset-email').value;
-      alert(`Password reset instructions & secure PIN have been dispatched to: ${email}`);
+      alert(`Instructions & verification token dispatched to: ${email}`);
       showResetBox(false);
     }
 
@@ -657,18 +946,23 @@
       document.getElementById('current-user-role').innerText = currentUser.role === 'admin' ? 'Super Admin' : 'Staff Teacher';
       
       const isAdmin = currentUser.role === 'admin';
-      const addBtn = document.getElementById('btn-add-cadet');
-      if (addBtn) addBtn.style.display = isAdmin ? 'flex' : 'none';
+      const adminBtns = ['btn-add-cadet', 'btn-add-teacher', 'btn-add-result'];
+      adminBtns.forEach(id => {
+        const elem = document.getElementById(id);
+        if(elem) elem.style.display = isAdmin ? 'flex' : 'none';
+      });
 
       refreshAllSystemViews();
       initChart();
     }
 
-    // View Navigation
+    // View Routing
     function navigateView(viewName) {
-      const views = ['dashboard', 'students', 'attendance', 'fees', 'idcards'];
+      const views = ['dashboard', 'students', 'teachers', 'attendance', 'results', 'accounts', 'notices', 'idcards'];
       views.forEach(v => {
-        document.getElementById(`view-${v}`).classList.add('hidden');
+        const elem = document.getElementById(`view-${v}`);
+        if(elem) elem.classList.add('hidden');
+        
         const b = document.getElementById(`nav-${v}`);
         if(b) {
           b.classList.remove('bg-emerald-800', 'text-white', 'font-semibold');
@@ -697,10 +991,13 @@
 
       const titles = {
         dashboard: "Executive Dashboard",
-        students: "Cadet Database",
-        attendance: "Parade Attendance",
-        fees: "Fees & Billing",
-        idcards: "Cadet ID Badge"
+        students: "Cadet Enrolled Database",
+        teachers: "Faculty & Staff Directory[span_23](start_span)[span_23](end_span)",
+        attendance: "Daily Parade Attendance",
+        results: "Student Progress & Result Card",
+        accounts: "Institution Accounts & Payroll",
+        notices: "Institutional Notice Board",
+        idcards: "Cadet Identity Badge"
       };
       document.getElementById('top-title').innerText = titles[viewName];
     }
@@ -709,7 +1006,7 @@
       document.getElementById(id).classList.toggle('hidden');
     }
 
-    // CADET CRUD CONTROLS
+    // 1. CADET CRUD
     function renderStudentTable() {
       const query = (document.getElementById('cadet-search')?.value || '').toLowerCase();
       const tbody = document.getElementById('student-tbody');
@@ -770,8 +1067,9 @@
     }
 
     function deleteCadet(id) {
-      if (confirm(`Are you sure you want to delete Cadet #NS-${id}? The record will be permanently purged across the entire ERP.`)) {
+      if (confirm(`Delete Cadet #NS-${id}? The record will be permanently purged across ERP.`)) {
         appState.students = appState.students.filter(s => s.id !== id);
+        appState.results = appState.results.filter(r => r.cadetId !== id);
         saveState();
       }
     }
@@ -794,25 +1092,94 @@
 
       if (editId) {
         const target = appState.students.find(s => s.id == editId);
-        if (target) {
-          Object.assign(target, data);
-        }
+        if (target) Object.assign(target, data);
       } else {
         const newId = 100 + appState.students.length + 1;
-        appState.students.push({
-          id: newId,
-          ...data,
-          present: true
-        });
+        appState.students.push({ id: newId, ...data, present: true });
       }
 
       saveState();
       toggleModal('modal-cadet');
     }
 
-    // ATTENDANCE WITH CLASS BREAKDOWN & AUTO DISPATCH
+    // 2. TEACHERS & STAFF CRUD
+    function renderTeacherTable() {
+      const tbody = document.getElementById('teacher-tbody');
+      tbody.innerHTML = '';
+      const isAdmin = currentUser && currentUser.role === 'admin';
+
+      appState.teachers.forEach(t => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="px-4 py-3 font-bold text-slate-800">#ST-${t.id}</td>
+            <td class="px-4 py-3 font-semibold text-slate-900">${t.name}</td>
+            <td class="px-4 py-3 text-slate-700">${t.designation}</td>
+            <td class="px-4 py-3"><span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-[11px] font-bold">${t.subject}</span></td>
+            <td class="px-4 py-3">${t.phone}</td>
+            <td class="px-4 py-3 font-bold text-emerald-700">৳ ${t.salary.toLocaleString()}</td>
+            <td class="px-4 py-3 text-center space-x-1 whitespace-nowrap">
+              ${isAdmin ? `
+                <button onclick="editTeacher(${t.id})" class="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteTeacher(${t.id})" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 px-2 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i></button>
+              ` : '<span class="text-slate-400">View Only</span>'}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function openTeacherModal() {
+      document.getElementById('modal-teacher-title').innerText = 'Add New Teacher / Staff';
+      document.getElementById('edit-teacher-id').value = '';
+      document.getElementById('teacher-form').reset();
+      toggleModal('modal-teacher');
+    }
+
+    function editTeacher(id) {
+      const t = appState.teachers.find(item => item.id === id);
+      if(!t) return;
+      document.getElementById('modal-teacher-title').innerText = `Edit Teacher (#ST-${t.id})`;
+      document.getElementById('edit-teacher-id').value = t.id;
+      document.getElementById('form-teacher-name').value = t.name;
+      document.getElementById('form-teacher-designation').value = t.designation;
+      document.getElementById('form-teacher-subject').value = t.subject;
+      document.getElementById('form-teacher-phone').value = t.phone;
+      document.getElementById('form-teacher-salary').value = t.salary;
+      toggleModal('modal-teacher');
+    }
+
+    function deleteTeacher(id) {
+      if(confirm(`Remove instructor #ST-${id} from ERP directory?`)) {
+        appState.teachers = appState.teachers.filter(t => t.id !== id);
+        saveState();
+      }
+    }
+
+    function handleTeacherFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('edit-teacher-id').value;
+      const data = {
+        name: document.getElementById('form-teacher-name').value,
+        designation: document.getElementById('form-teacher-designation').value,
+        subject: document.getElementById('form-teacher-subject').value,
+        phone: document.getElementById('form-teacher-phone').value,
+        salary: Number(document.getElementById('form-teacher-salary').value)
+      };
+
+      if(editId) {
+        const target = appState.teachers.find(t => t.id == editId);
+        if(target) Object.assign(target, data);
+      } else {
+        const newId = 200 + appState.teachers.length + 1;
+        appState.teachers.push({ id: newId, ...data });
+      }
+
+      saveState();
+      toggleModal('modal-teacher');
+    }
+
+    // 3. ATTENDANCE & PARADE DRILL
     function renderAttendanceView() {
-      // 1. Render Breakdown Cards
       const container = document.getElementById('class-attendance-cards');
       container.innerHTML = '';
 
@@ -825,12 +1192,11 @@
         container.innerHTML += `
           <button onclick="filterAttendanceClass('${cls}')" class="p-2 rounded-lg border text-center transition ${isSelected ? 'bg-emerald-800 text-white border-emerald-900 shadow' : 'bg-white hover:bg-slate-50 border-slate-200'}">
             <span class="block text-[10px] font-bold truncate">${cls}</span>
-            <span class="text-sm font-black ${isSelected ? 'text-amber-300' : 'text-emerald-700'}">${presentCount}/${total}</span>
+            <span class="text-xs font-black ${isSelected ? 'text-amber-300' : 'text-emerald-700'}">${presentCount}/${total}</span>
           </button>
         `;
       });
 
-      // 2. Render Attendance Cadet List
       const tbody = document.getElementById('attendance-tbody');
       tbody.innerHTML = '';
       document.getElementById('att-filter-label').innerText = `Displaying: ${activeAttendanceClassFilter === 'All' ? 'All Classes' : activeAttendanceClassFilter}`;
@@ -879,7 +1245,7 @@
 
     function sendAbsentNotice(phone, name, cadetClass, channel) {
       const formattedPhone = phone.startsWith('+88') ? phone : '+88' + phone.replace(/^0+/, '');
-      const message = `[North South Pre-Cadet Academy]\nNotice: Cadet ${name} (${cadetClass}) is ABSENT in today's parade/drill.\nPlease contact campus authority: +8801742-955450.`;
+      const message = `[North South Pre-Cadet Academy]\nNotice: Cadet ${name} (${cadetClass}) is ABSENT in today's parade/drill.\nPlease contact campus authority: +8801742-955450.[span_24](start_span)[span_24](end_span)`;
 
       if(channel === 'whatsapp') {
         const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
@@ -895,13 +1261,117 @@
       alert(`Parade Attendance Saved Successfully!\nTotal Present: ${appState.students.length - absentCadets.length}\nTotal Absent: ${absentCadets.length}`);
     }
 
-    // FEES & BILLING
-    function populateStudentDropdown() {
-      const sel = document.getElementById('bill-student');
+    // 4. EXAMINATION MARKS & RESULT SHEET
+    function renderResultTable() {
+      const tbody = document.getElementById('result-tbody');
+      tbody.innerHTML = '';
+      appState.results.forEach((r, idx) => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="px-4 py-3 font-bold">#NS-${r.cadetId}</td>
+            <td class="px-4 py-3 font-semibold text-slate-800">${r.name}</td>
+            <td class="px-4 py-3">${r.class}</td>
+            <td class="px-4 py-3">${r.term}</td>
+            <td class="px-4 py-3 text-center"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-black">${r.gpa} (${r.grade})</span></td>
+            <td class="px-4 py-3 text-center">
+              <button onclick="previewMarksheet(${idx})" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded text-xs font-bold">
+                <i class="fa-solid fa-file-lines"></i> View Card
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function openResultModal() {
+      const sel = document.getElementById('result-cadet');
       sel.innerHTML = '';
       appState.students.forEach(s => {
-        sel.innerHTML += `<option value="${s.name}">${s.name} (${s.class})</option>`;
+        sel.innerHTML += `<option value="${s.id}">${s.name} (${s.class})</option>`;
       });
+      toggleModal('modal-result');
+    }
+
+    function handleResultFormSubmit(e) {
+      e.preventDefault();
+      const cadetId = Number(document.getElementById('result-cadet').value);
+      const student = appState.students.find(s => s.id === cadetId);
+      const term = document.getElementById('result-term').value;
+
+      const bangla = Number(document.getElementById('mark-bangla').value);
+      const english = Number(document.getElementById('mark-english').value);
+      const math = Number(document.getElementById('mark-math').value);
+      const drill = Number(document.getElementById('mark-drill').value);
+
+      const avg = (bangla + english + math + drill) / 4;
+      let grade = "F", gpa = "0.00";
+      if(avg >= 80) { grade = "A+"; gpa = "5.00"; }
+      else if(avg >= 70) { grade = "A"; gpa = "4.00"; }
+      else if(avg >= 60) { grade = "A-"; gpa = "3.50"; }
+      else if(avg >= 50) { grade = "B"; gpa = "3.00"; }
+      else if(avg >= 40) { grade = "C"; gpa = "2.00"; }
+      else if(avg >= 33) { grade = "D"; gpa = "1.00"; }
+
+      appState.results.unshift({
+        cadetId,
+        name: student.name,
+        class: student.class,
+        term,
+        bangla, english, math, drill,
+        gpa, grade
+      });
+
+      saveState();
+      toggleModal('modal-result');
+      e.target.reset();
+    }
+
+    function previewMarksheet(idx) {
+      const r = appState.results[idx];
+      document.getElementById('card-term').innerText = r.term;
+      document.getElementById('card-cadet-name').innerText = r.name;
+      document.getElementById('card-cadet-id').innerText = `#NS-${r.cadetId}`;
+      document.getElementById('card-cadet-class').innerText = r.class;
+      document.getElementById('card-cadet-grade').innerText = `${r.grade} (GPA: ${r.gpa})`;
+
+      const getSubjectGrade = (m) => m >= 80 ? 'A+' : m >= 70 ? 'A' : m >= 60 ? 'A-' : m >= 50 ? 'B' : m >= 33 ? 'D' : 'F';
+      const subBody = document.getElementById('card-subjects-body');
+      subBody.innerHTML = `
+        <tr><td class="p-2">Bangla</td><td class="p-2 text-center">${r.bangla}</td><td class="p-2 text-center font-bold">${getSubjectGrade(r.bangla)}</td></tr>
+        <tr><td class="p-2">English</td><td class="p-2 text-center">${r.english}</td><td class="p-2 text-center font-bold">${getSubjectGrade(r.english)}</td></tr>
+        <tr><td class="p-2">Mathematics</td><td class="p-2 text-center">${r.math}</td><td class="p-2 text-center font-bold">${getSubjectGrade(r.math)}</td></tr>
+        <tr><td class="p-2">Cadet Drill & GK</td><td class="p-2 text-center">${r.drill}</td><td class="p-2 text-center font-bold">${getSubjectGrade(r.drill)}</td></tr>
+      `;
+
+      toggleModal('modal-marksheet-preview');
+    }
+
+    // 5. ACCOUNTS & TEACHER PAYROLL
+    function populateDropdowns() {
+      // Cadet drop
+      const billSel = document.getElementById('bill-student');
+      if(billSel) {
+        billSel.innerHTML = '';
+        appState.students.forEach(s => {
+          billSel.innerHTML += `<option value="${s.name}">${s.name} (${s.class})</option>`;
+        });
+      }
+
+      // Teacher drop
+      const salSel = document.getElementById('salary-teacher');
+      if(salSel) {
+        salSel.innerHTML = '<option value="">-- Choose Instructor --</option>';
+        appState.teachers.forEach(t => {
+          salSel.innerHTML += `<option value="${t.id}" data-salary="${t.salary}">${t.name} (${t.designation})</option>`;
+        });
+      }
+    }
+
+    function autoFillSalary() {
+      const sel = document.getElementById('salary-teacher');
+      const opt = sel.options[sel.selectedIndex];
+      const sal = opt.getAttribute('data-salary');
+      if(sal) document.getElementById('salary-amount').value = sal;
     }
 
     function handleFeePayment(e) {
@@ -913,8 +1383,7 @@
       const txId = "TX" + Math.floor(1000 + Math.random() * 9000);
       const date = new Date().toISOString().split('T')[0];
 
-      const newTx = { id: txId, student: cadetName, reason: reason, method: method, amount: amount, date: date };
-      appState.transactions.unshift(newTx);
+      appState.transactions.unshift({ id: txId, type: "INFLOW", entity: cadetName, reason, method, amount, date });
       saveState();
       e.target.reset();
 
@@ -924,95 +1393,137 @@
         `TxID: ${txId}\n` +
         `Cadet: ${cadetName}\n` +
         `Purpose: ${reason}\n` +
-        `Payment Method: ${method}\n` +
+        `Channel: ${method}\n` +
         `Amount Paid: BDT ${amount}/-\n` +
-        `Status: Paid & Verified\n` +
+        `Status: Verified Inflow\n` +
         `Date: ${date}\n` +
-        `Campus: Rouha Bazar, Sarishabari`
+        `Campus: Rouha Bazar, Sarishabari[span_25](start_span)[span_25](end_span)`
       );
+      window.open(`https://api.whatsapp.com/send?phone=${NOTIFICATION_WHATSAPP}&text=${textMsg}`, '_blank');
+    }
 
-      const waURL = `https://api.whatsapp.com/send?phone=${NOTIFICATION_WHATSAPP}&text=${textMsg}`;
-      window.open(waURL, '_blank');
+    function handlePayrollSubmit(e) {
+      e.preventDefault();
+      const sel = document.getElementById('salary-teacher');
+      const teacherName = sel.options[sel.selectedIndex].text;
+      const month = document.getElementById('salary-month').value;
+      const method = document.getElementById('salary-method').value;
+      const amount = Number(document.getElementById('salary-amount').value);
+      const txId = "SAL" + Math.floor(1000 + Math.random() * 9000);
+      const date = new Date().toISOString().split('T')[0];
+
+      appState.transactions.unshift({
+        id: txId,
+        type: "OUTFLOW",
+        entity: teacherName,
+        reason: `Salary: ${month}`,
+        method,
+        amount,
+        date
+      });
+
+      saveState();
+      e.target.reset();
+      alert(`Salary Payment voucher generated successfully for ${teacherName}!`);
     }
 
     function renderTransactions() {
       const tbody = document.getElementById('tx-tbody');
       tbody.innerHTML = '';
       appState.transactions.forEach(t => {
+        const isInflow = t.type === "INFLOW";
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50 border-b">
             <td class="px-3 py-2 font-mono text-slate-500">${t.id}</td>
-            <td class="px-3 py-2 font-bold text-slate-800">${t.student}</td>
+            <td class="px-3 py-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-black ${isInflow ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                ${t.type}
+              </span>
+            </td>
+            <td class="px-3 py-2 font-bold text-slate-800">${t.entity}</td>
             <td class="px-3 py-2 text-slate-600">${t.reason}</td>
             <td class="px-3 py-2"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-semibold">${t.method}</span></td>
-            <td class="px-3 py-2 text-right font-bold text-emerald-700">৳ ${t.amount}</td>
-            <td class="px-3 py-2 text-center text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> Sent</td>
+            <td class="px-3 py-2 text-right font-black ${isInflow ? 'text-emerald-700' : 'text-red-600'}">
+              ${isInflow ? '+' : '-'} ৳ ${t.amount.toLocaleString()}
+            </td>
           </tr>
         `;
       });
     }
 
-    // STATS METRICS
-    function updateDashboardStats() {
-      const totalStudents = appState.students.length;
-      const presentCount = appState.students.filter(s => s.present).length;
-      const rate = totalStudents ? Math.round((presentCount / totalStudents) * 100) : 0;
-      const totalRev = appState.transactions.reduce((acc, curr) => acc + curr.amount, 0);
-
-      document.getElementById('stat-cadets').innerText = totalStudents;
-      document.getElementById('stat-att-rate').innerText = `${rate}%`;
-      document.getElementById('stat-fees-collected').innerText = `৳ ${totalRev.toLocaleString()}`;
+    // 6. NOTICE BOARD UPDATE
+    function handleNoticeUpdate(e) {
+      e.preventDefault();
+      const text = document.getElementById('input-notice-text').value;
+      appState.notice = `📢 Notice (${new Date().toLocaleDateString()}): ` + text;
+      saveState();
+      document.getElementById('input-notice-text').value = '';
+      alert("Institutional notice ticker updated live!");
     }
 
-    // ANALYTICS CHART
+    // 7. STATS & ANALYTICS CHART
+    function updateDashboardStats() {
+      const totalCadets = appState.students.length;
+      const totalTeachers = appState.teachers.length;
+      const presentCount = appState.students.filter(s => s.present).length;
+      const rate = totalCadets ? Math.round((presentCount / totalCadets) * 100) : 0;
+
+      let inflow = 0, outflow = 0;
+      appState.transactions.forEach(t => {
+        if(t.type === "INFLOW") inflow += t.amount;
+        else outflow += t.amount;
+      });
+
+      document.getElementById('stat-cadets').innerText = totalCadets;
+      document.getElementById('stat-teachers').innerText = totalTeachers;
+      document.getElementById('stat-att-rate').innerText = `${rate}%`;
+      document.getElementById('stat-inflow').innerText = `৳ ${inflow.toLocaleString()}`;
+      document.getElementById('stat-outflow').innerText = `৳ ${outflow.toLocaleString()}`;
+    }
+
     function initChart() {
       const ctx = document.getElementById('analyticsChart');
       if(!ctx) return;
       if(analyticsChartInstance) analyticsChartInstance.destroy();
 
       analyticsChartInstance = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
-          labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Today'],
-          datasets: [
-            {
-              label: 'Parade Attendance (%)',
-              data: [82, 88, 85, 92, 96, 75],
-              borderColor: '#059669',
-              tension: 0.35,
-              fill: false
-            },
-            {
-              label: 'Revenue Trend (x100 BDT)',
-              data: [20, 35, 25, 45, 65, 30],
-              borderColor: '#e6a117',
-              tension: 0.35,
-              fill: false
-            }
-          ]
+          labels: ['Total Inflow (x1000)', 'Salary Outflow (x1000)', 'Attendance Rate %', 'Cadets Enrolled'],
+          datasets: [{
+            label: 'Executive Metrics',
+            data: [
+              appState.transactions.filter(t => t.type==='INFLOW').reduce((a,c)=>a+c.amount,0)/1000,
+              appState.transactions.filter(t => t.type==='OUTFLOW').reduce((a,c)=>a+c.amount,0)/1000,
+              appState.students.length ? (appState.students.filter(s=>s.present).length/appState.students.length)*100 : 0,
+              appState.students.length * 10
+            ],
+            backgroundColor: ['#004d26', '#b91c1c', '#e6a117', '#0c2340'],
+            borderRadius: 6
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom' } }
+          plugins: { legend: { display: false } }
         }
       });
     }
 
-    // ID CARD PREVIEW
+    // 8. ID CARD PREVIEW
     function previewIDCard(id) {
       const s = appState.students.find(item => item.id === id);
       if(!s) return;
       document.getElementById('idcard-name').innerText = s.name;
       document.getElementById('idcard-class').innerText = s.class;
       document.getElementById('idcard-id').innerText = `#NS-${s.id}`;
-      document.getElementById('idcard-father').innerText = s.father || 'N/A';
+      document.getElementById('idcard-guardian').innerText = s.guardian || s.father || 'N/A';
       document.getElementById('idcard-phone').innerText = s.phone;
       document.getElementById('idcard-blood').innerText = s.blood;
       navigateView('idcards');
     }
 
-    // EXPORT CSV
+    // 9. EXPORT CSV
     function exportStudentsCSV() {
       let csv = 'ID,Name,Class,Blood,Father,Mother,Guardian,Phone,Email,PresentAddress,PermanentAddress\n';
       appState.students.forEach(s => {
@@ -1022,7 +1533,7 @@
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.setAttribute('href', url);
-      a.setAttribute('download', 'cadets_database_extended.csv');
+      a.setAttribute('download', 'cadets_database_cloud.csv');
       a.click();
     }
 
