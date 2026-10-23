@@ -242,7 +242,7 @@
             <div class="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
                 <p class="text-[10px] md:text-[11px] text-slate-500 font-semibold uppercase">Total Cadets</p>
-                <h3 id="stat-cadets" class="text-lg md:text-xl font-bold text-slate-900 mt-1">0</h3>
+                <h3 id="stat-cadets" class="text-lg md:text-xl font-bold text-slate-900 mt-1">20</h3>
               </div>
               <div class="w-9 h-9 md:w-10 md:h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm md:text-base">
                 <i class="fa-solid fa-user-graduate"></i>
@@ -252,7 +252,7 @@
             <div class="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
                 <p class="text-[10px] md:text-[11px] text-slate-500 font-semibold uppercase">Faculty & Staff</p>
-                <h3 id="stat-teachers" class="text-lg md:text-xl font-bold text-slate-900 mt-1">0</h3>
+                <h3 id="stat-teachers" class="text-lg md:text-xl font-bold text-slate-900 mt-1">2</h3>
               </div>
               <div class="w-9 h-9 md:w-10 md:h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center text-sm md:text-base">
                 <i class="fa-solid fa-chalkboard-user"></i>
@@ -262,7 +262,7 @@
             <div class="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
                 <p class="text-[10px] md:text-[11px] text-slate-500 font-semibold uppercase">Parade Att.</p>
-                <h3 id="stat-att-rate" class="text-lg md:text-xl font-bold text-emerald-600 mt-1">0%</h3>
+                <h3 id="stat-att-rate" class="text-lg md:text-xl font-bold text-emerald-600 mt-1">85%</h3>
               </div>
               <div class="w-9 h-9 md:w-10 md:h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-sm md:text-base">
                 <i class="fa-solid fa-user-check"></i>
@@ -316,9 +316,9 @@
           </div>
 
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[600px] custom-scroll">
               <table class="w-full text-left text-xs text-slate-600">
-                <thead class="bg-slate-100 text-slate-700 font-bold uppercase border-b border-slate-200">
+                <thead class="bg-slate-100 text-slate-700 font-bold uppercase border-b border-slate-200 sticky top-0">
                   <tr>
                     <th class="px-4 py-3">Cadet ID</th>
                     <th class="px-4 py-3">Full Name</th>
@@ -368,7 +368,7 @@
           </div>
         </section>
 
-        <!-- 4. ATTENDANCE & PARADE (WITH SEARCH BAR) -->
+        <!-- 4. ATTENDANCE & PARADE -->
         <section id="view-attendance" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
@@ -403,9 +403,9 @@
               <span class="font-bold text-slate-700" id="att-filter-label">Displaying: All Classes</span>
               <span class="text-slate-500">Uncheck checkbox to flag Absent</span>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[500px] custom-scroll">
               <table class="w-full text-left text-xs">
-                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b sticky top-0">
                   <tr>
                     <th class="px-4 py-3">Roll ID</th>
                     <th class="px-4 py-3">Cadet Name</th>
@@ -422,7 +422,7 @@
           </div>
         </section>
 
-        <!-- 5. SMART QR SCANNER (CAMERA FIXED) -->
+        <!-- 5. SMART QR SCANNER -->
         <section id="view-qrscanner" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <h3 class="font-bold text-slate-800 text-sm">Smart Gate QR Scanner & Instant Gate Pass</h3>
@@ -453,7 +453,7 @@
           </div>
         </section>
 
-        <!-- 6. CADET FITNESS & DISCIPLINE (WORKING MODAL) -->
+        <!-- 6. CADET FITNESS & DISCIPLINE -->
         <section id="view-fitness" class="hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -466,9 +466,9 @@
           </div>
 
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[500px] custom-scroll">
               <table class="w-full text-left text-xs">
-                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
+                <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b sticky top-0">
                   <tr>
                     <th class="px-4 py-3">Cadet ID</th>
                     <th class="px-4 py-3">Name</th>
@@ -485,7 +485,7 @@
           </div>
         </section>
 
-        <!-- 7. RESULTS DATABASE (70+ DEMO STUDENTS RESULTS) -->
+        <!-- 7. RESULTS DATABASE -->
         <section id="view-results" class="hidden space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
@@ -671,12 +671,12 @@
           </div>
         </section>
 
-        <!-- 9. TC & TESTIMONIAL (SELECT ALL CADETS READY) -->
+        <!-- 9. TC & TESTIMONIAL (SELECT ALL 20+ CADETS) -->
         <section id="view-certificates" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Official Transfer Certificate & Testimonials</h3>
-              <p class="text-slate-500">Select any enrolled cadet to generate and print instant TC.</p>
+              <p class="text-slate-500">Select any enrolled cadet from dropdown to generate and print instant TC.</p>
             </div>
             <div class="flex gap-2 w-full sm:w-auto">
               <select id="cert-cadet-select" onchange="generateCertificatePreview()" class="border rounded-lg p-2 flex-1 sm:flex-none font-bold text-emerald-800"></select>
@@ -738,16 +738,19 @@
           </div>
         </section>
 
-        <!-- 12. CADET ID CARD GENERATOR WITH SMART QR -->
+        <!-- 12. CADET ID CARD GENERATOR (WITH CADET SELECTOR & EDIT) -->
         <section id="view-idcards" class="hidden space-y-4">
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Official Cadet Identity Badge</h3>
-              <p class="text-xs text-slate-500">Includes Smart QR code for automatic gate scan attendance</p>
+              <p class="text-xs text-slate-500">Select any cadet to preview, customize and print badge</p>
             </div>
-            <button onclick="window.print()" class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg font-bold">
-              <i class="fa-solid fa-print"></i> Print Badge
-            </button>
+            <div class="flex gap-2 w-full sm:w-auto">
+              <select id="idcard-cadet-select" onchange="previewIDCard(Number(this.value))" class="border rounded-lg p-2 text-xs font-bold text-emerald-800 flex-1 sm:flex-none"></select>
+              <button onclick="window.print()" class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg font-bold flex items-center gap-1">
+                <i class="fa-solid fa-print"></i> Print Badge
+              </button>
+            </div>
           </div>
 
           <div id="print-area" class="flex justify-center p-4">
@@ -778,7 +781,7 @@
                 </div>
                 <div class="flex justify-between">
                   <span class="text-slate-500">Contact:</span>
-                  <span class="font-bold text-slate-800" id="idcard-phone">+88017XXXXXXXX</span>
+                  <span class="font-bold text-slate-800 font-mono" id="idcard-phone">+88017XXXXXXXX</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-slate-500">Blood Group:</span>
@@ -827,7 +830,7 @@
     </div>
   </div>
 
-  <!-- CADET ENROLL MODAL (WITH USERNAME, PASS, EMAIL & +880 PREFIX) -->
+  <!-- CADET ENROLL MODAL -->
   <div id="modal-cadet" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -900,7 +903,7 @@
     </div>
   </div>
 
-  <!-- INSTRUCTOR MODAL (EDIT & ADD) -->
+  <!-- INSTRUCTOR MODAL -->
   <div id="modal-teacher" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -1059,77 +1062,106 @@
     const HELPLINE_NUMBER = "+8801689333000";
     const ADMIN_WHATSAPP = "+8801681196700";
     const CLASSES_LIST = ["Play", "Nursery", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7"];
-    const DB_VERSION = "4.0";
+    const DB_VERSION = "5.0";
 
     // SUPABASE CREDENTIALS
     const SUPABASE_URL = "https://inbwhkxscyranextdxqp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_f_3KIEj7VWQ9pDQtpnGgwA_HA5uTnGu";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // GENERATING 10 DEMO CADETS PER CLASS (TOTAL 90 CADETS)
-    function generateDemoStudents() {
-      const names = [
-        "Tanvir Ahmed", "Maria Sultana", "SAKIBUL ISLAM", "Rayhan Kabir", "Sadia Islam",
-        "Farhan Labib", "Tahmina Akter", "Mustakim Billah", "Nafisa Kamal", "Zubayer Hossain"
-      ];
+    // EXACT 2 CADETS PER CLASS (PLAY TO CLASS 7) + TANVIR, MARIA, SAKIBUL
+    function getStandard20Cadets() {
+      const classCadetPairs = {
+        "Play": [
+          { id: 111, name: "Ahnaf Habib", guardian: "Habibur Rahman", blood: "A+", phone: "+8801711223301" },
+          { id: 112, name: "Sumaiya Jannat", guardian: "Mokhlesur Rahman", blood: "O+", phone: "+8801711223302" }
+        ],
+        "Nursery": [
+          { id: 113, name: "Ayan Chowdhury", guardian: "Kabir Chowdhury", blood: "B+", phone: "+8801711223303" },
+          { id: 114, name: "Nusrat Jahan", guardian: "Jahangir Alam", blood: "AB+", phone: "+8801711223304" }
+        ],
+        "Class 1": [
+          { id: 115, name: "Samiul Islam", guardian: "Sirajul Islam", blood: "O+", phone: "+8801711223305" },
+          { id: 116, name: "Fatima Zohra", guardian: "Farhad Hossain", blood: "A+", phone: "+8801711223306" }
+        ],
+        "Class 2": [
+          { id: 117, name: "Mahir Faysal", guardian: "Faysal Ahmed", blood: "B+", phone: "+8801711223307" },
+          { id: 118, name: "Mehjabin Mehak", guardian: "Mostaq Ahmed", blood: "O+", phone: "+8801711223308" }
+        ],
+        "Class 3": [
+          { id: 119, name: "Tahmid Hasan", guardian: "Hasan Mahmud", blood: "A+", phone: "+8801711223309" },
+          { id: 120, name: "Afrin Sultana", guardian: "Aminul Islam", blood: "AB+", phone: "+8801711223310" }
+        ],
+        "Class 4": [
+          { id: 104, name: "Sadia Islam", guardian: "Sirajul Islam", blood: "AB+", phone: "+8801622445566" },
+          { id: 121, name: "Rakibul Hasan", guardian: "Rafiqul Islam", blood: "B+", phone: "+8801711223311" }
+        ],
+        "Class 5": [
+          { id: 103, name: "Rayhan Kabir", guardian: "Humayun Kabir", blood: "B+", phone: "+8801912334455" },
+          { id: 122, name: "Tasnim Anjum", guardian: "Anwar Hossain", blood: "O+", phone: "+8801711223312" }
+        ],
+        "Class 6": [
+          { id: 102, name: "Maria Sultana", guardian: "Rafiqul Islam", blood: "A+", phone: "+8801819223344" },
+          { id: 123, name: "Zubayer Al Mamun", guardian: "Mamunur Rashid", blood: "B+", phone: "+8801711223313" }
+        ],
+        "Class 7": [
+          { id: 101, name: "Tanvir Ahmed", guardian: "Abdul Alim", blood: "O+", phone: "+8801742955450" },
+          { id: 105, name: "SAKIBUL ISLAM", guardian: "MD ATIQUL ISLAM", blood: "B+", phone: "+8801689333000" }
+        ]
+      };
+
       let students = [];
       let results = [];
       let fitness = [];
-      let idCounter = 101;
 
-      CLASSES_LIST.forEach((cls) => {
-        names.forEach((baseName, idx) => {
-          const studentId = idCounter++;
-          const fullName = `${baseName} (${cls})`;
-          const username = `cadet.${cls.toLowerCase().replace(' ', '')}.${idx + 1}`;
-          const phone = `+88017${Math.floor(10000000 + Math.random() * 90000000)}`;
-
+      Object.keys(classCadetPairs).forEach(cls => {
+        classCadetPairs[cls].forEach((c, idx) => {
           students.push({
-            id: studentId,
-            name: fullName,
-            username: username,
+            id: c.id,
+            name: c.name,
+            username: `cadet.${c.id}`,
             password: "123",
             class: cls,
-            blood: ["A+", "B+", "O+", "AB+"][idx % 4],
-            father: `Guardian of ${baseName}`,
-            mother: "Mother Name",
-            guardian: `Guardian of ${baseName}`,
-            phone: phone,
-            email: `guardian.${studentId}@nspacademy.edu.bd`,
-            present: idx % 4 !== 0, // majority present
-            monthlyAttendanceRate: 85 + (idx % 15),
-            dueFee: idx % 3 === 0 ? 1500 : 0
+            blood: c.blood,
+            father: c.guardian,
+            mother: "Mother",
+            guardian: c.guardian,
+            phone: c.phone,
+            email: `guardian.${c.id}@nspacademy.edu.bd`,
+            present: idx === 0, // balanced attendance
+            monthlyAttendanceRate: 85 + (idx * 10),
+            dueFee: idx === 1 ? 1500 : 0
           });
 
-          // Results
-          const b = 70 + (idx * 3) % 25;
-          const e = 72 + (idx * 2) % 25;
-          const m = 75 + (idx * 4) % 25;
-          const d = 85 + (idx * 2) % 15;
-          const avg = (b + e + m + d) / 4;
-          const gpa = avg >= 80 ? "5.00" : avg >= 70 ? "4.00" : "3.50";
-          const grade = avg >= 80 ? "A+" : avg >= 70 ? "A" : "A-";
+          // Preloaded Results for all 20 Cadets
+          const bangla = 75 + (idx * 10);
+          const english = 80 + (idx * 5);
+          const math = 82 + (idx * 6);
+          const drill = 88 + (idx * 4);
+          const avg = (bangla + english + math + drill) / 4;
+          const gpa = avg >= 80 ? "5.00" : "4.00";
+          const grade = avg >= 80 ? "A+" : "A";
 
           results.push({
-            id: `RES${studentId}`,
-            cadetId: studentId,
-            name: fullName,
+            id: `RES${c.id}`,
+            cadetId: c.id,
+            name: c.name,
             class: cls,
             term: "Mid Term Examination",
-            bangla: b, english: e, math: m, drill: d,
-            gpa: gpa, grade: grade
+            bangla, english, math, drill,
+            gpa, grade
           });
 
-          // Fitness
+          // Preloaded Fitness Records for all 20 Cadets
           fitness.push({
-            cadetId: studentId,
-            name: fullName,
+            cadetId: c.id,
+            name: c.name,
             class: cls,
-            height: 135 + (idx * 2),
-            weight: 35 + idx,
-            bmi: ( (35 + idx) / Math.pow((135 + idx * 2)/100, 2) ).toFixed(1),
-            drillScore: 85 + (idx % 15),
-            conduct: 90 + (idx % 10)
+            height: 130 + (idx * 8),
+            weight: 32 + (idx * 6),
+            bmi: ((32 + idx * 6) / Math.pow((130 + idx * 8)/100, 2)).toFixed(1),
+            drillScore: 88 + (idx * 4),
+            conduct: 92 + (idx * 3)
           });
         });
       });
@@ -1137,12 +1169,12 @@
       return { students, results, fitness };
     }
 
-    const initialGenerated = generateDemoStudents();
+    const initialDataPack = getStandard20Cadets();
 
     const DEFAULT_DATA = {
       version: DB_VERSION,
       notice: "📢 North South Pre-Cadet Academy: Supabase Cloud Real-Time Live! Admissions for academic session 2026-27 are ongoing.",
-      students: initialGenerated.students,
+      students: initialDataPack.students,
       teachers: [
         { 
           id: 201, name: "Capt. M. A. Rahman", username: "capt_rahman", password: "123", role: "manager", 
@@ -1155,8 +1187,8 @@
           phone: "+8801681196700", email: "manager.farazyhospital@gmail.com", salary: 100000 
         }
       ],
-      fitnessRecords: initialGenerated.fitness,
-      results: initialGenerated.results,
+      fitnessRecords: initialDataPack.fitness,
+      results: initialDataPack.results,
       transactions: [
         { id: "TX1001", type: "INFLOW", entity: "Tanvir Ahmed (Class 7)", reason: "Monthly Tuition Fee", method: "Cash Counter", amount: 1500, date: "2026-10-23" },
         { id: "TX1002", type: "INFLOW", entity: "SAKIBUL ISLAM (Class 7)", reason: "Monthly Tuition Fee", method: "bKash", amount: 1500, date: "2026-10-23" }
@@ -1164,6 +1196,10 @@
     };
 
     let appState = JSON.parse(localStorage.getItem('north_south_db')) || DEFAULT_DATA;
+    // Always ensure at least 18+ students if cache was corrupted
+    if (!appState.students || appState.students.length < 10) {
+      appState = DEFAULT_DATA;
+    }
     let currentUser = JSON.parse(localStorage.getItem('north_south_user')) || null;
     let activeAttendanceClassFilter = "All";
     let analyticsChartInstance = null;
@@ -1189,7 +1225,7 @@
           .eq('id', 'main_erp_state')
           .maybeSingle();
 
-        if (data && data.payload && data.payload.students) {
+        if (data && data.payload && data.payload.students && data.payload.students.length >= 10) {
           appState = data.payload;
           localStorage.setItem('north_south_db', JSON.stringify(appState));
           refreshAllSystemViews();
@@ -1252,7 +1288,7 @@
     }
 
     function emergencyDatabaseReset() {
-      if (confirm("Reset cache to default with 10 demo cadets per class?")) {
+      if (confirm("Reset cache to default with 2 demo cadets per class (Play to Class 7)?")) {
         localStorage.clear();
         appState = DEFAULT_DATA;
         saveState();
@@ -1260,7 +1296,7 @@
       }
     }
 
-    // AUTHENTICATION (CADETS, STAFF, MANAGERS, ADMIN)
+    // AUTHENTICATION
     function handleAuthLogin(e) {
       e.preventDefault();
       const u = document.getElementById('auth-user').value.trim();
@@ -1326,9 +1362,7 @@
       const isAdmin = (r === 'admin');
       const isManager = (r === 'manager');
       const isTeacher = (r === 'teacher');
-      const isCadet = (r === 'cadet');
 
-      // CSV Download Access Control (Only Admin & Manager allowed)
       const btnCsv = document.getElementById('btn-export-csv');
       if (btnCsv) {
         btnCsv.style.display = (isAdmin || isManager) ? 'flex' : 'none';
@@ -1391,7 +1425,7 @@
       document.getElementById(id).classList.toggle('hidden');
     }
 
-    // CADET OPERATIONS
+    // CADET DATABASE
     function renderStudentTable() {
       const query = (document.getElementById('cadet-search')?.value || '').toLowerCase();
       const tbody = document.getElementById('student-tbody');
@@ -1471,7 +1505,7 @@
       alert(`Cadet ${name} enrolled into Supabase Database! User Login: ${username}`);
     }
 
-    // INSTRUCTOR & STAFF (WITH EDIT BUTTON & FULL CONTROLS)
+    // INSTRUCTOR & STAFF
     function renderTeacherTable() {
       const tbody = document.getElementById('teacher-tbody');
       tbody.innerHTML = '';
@@ -1559,7 +1593,7 @@
       toggleModal('modal-teacher');
     }
 
-    // ATTENDANCE & PARADE (WITH 30-DAY MONTHLY SEARCH)
+    // ATTENDANCE & PARADE
     function renderAttendanceView() {
       const container = document.getElementById('class-attendance-cards');
       container.innerHTML = '';
@@ -1637,7 +1671,7 @@
       saveState();
     }
 
-    // SMART QR SCANNER (CAMERA FIXED)
+    // SMART QR SCANNER
     function startQRScanner() {
       const qrBox = document.getElementById('qr-reader');
       qrBox.innerHTML = '';
@@ -1667,7 +1701,6 @@
     }
 
     function handleScannedQRCode(text) {
-      // Validate matching Cadet ID in database
       const match = text.match(/\d+/);
       if (match) {
         const id = Number(match[0]);
@@ -1690,7 +1723,7 @@
       alert("Invalid QR Badge! No matching cadet found in database.");
     }
 
-    // FITNESS ASSESSMENT (MODAL & CALCULATION FIXED)
+    // FITNESS ASSESSMENT
     function renderFitnessTable() {
       const tbody = document.getElementById('fitness-tbody');
       tbody.innerHTML = '';
@@ -1841,16 +1874,19 @@
       const billSel = document.getElementById('bill-student');
       const certSel = document.getElementById('cert-cadet-select');
       const resSel = document.getElementById('result-cadet');
+      const idcardSel = document.getElementById('idcard-cadet-select');
       
       if(billSel) {
         billSel.innerHTML = '';
         if(certSel) certSel.innerHTML = '';
         if(resSel) resSel.innerHTML = '';
+        if(idcardSel) idcardSel.innerHTML = '';
         
         appState.students.forEach(s => {
           billSel.innerHTML += `<option value="${s.name}">${s.name} (${s.class})</option>`;
           if(certSel) certSel.innerHTML += `<option value="${s.id}">${s.name} (${s.class} | #NS-${s.id})</option>`;
           if(resSel) resSel.innerHTML += `<option value="${s.id}">${s.name} (${s.class} | #NS-${s.id})</option>`;
+          if(idcardSel) idcardSel.innerHTML += `<option value="${s.id}">${s.name} (${s.class} | #NS-${s.id})</option>`;
         });
       }
 
@@ -1942,7 +1978,7 @@
       document.getElementById('cert-date').innerText = new Date().toISOString().split('T')[0];
     }
 
-    // CSV EXPORT (RESTRICTED TO ADMIN & MANAGER)
+    // CSV EXPORT
     function exportStudentsCSV() {
       if (currentUser.role !== 'admin' && currentUser.role !== 'manager') {
         alert("Access Denied! Only Super Admin and Academy Manager can export the CSV Database.");
@@ -2013,6 +2049,7 @@
       });
     }
 
+    // CADET ID CARD PREVIEW WITH LIVE QR
     function previewIDCard(id) {
       const s = appState.students.find(item => item.id === id);
       if(!s) return;
@@ -2026,6 +2063,11 @@
       const qrContainer = document.getElementById('idcard-qrcode');
       qrContainer.innerHTML = '';
       new QRCode(qrContainer, { text: `NS-CADET-${s.id}`, width: 60, height: 60 });
+
+      // Update selector if on ID card view
+      const idcardSel = document.getElementById('idcard-cadet-select');
+      if (idcardSel) idcardSel.value = s.id;
+
       navigateView('idcards');
     }
 
