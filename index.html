@@ -58,7 +58,7 @@
             <label class="block font-bold text-slate-700 mb-1">Username or Email</label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user-shield"></i></span>
-              <input type="text" id="auth-user" required placeholder="admin / teacher" class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+              <input type="text" id="auth-user" required placeholder="admin / teacher" class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
             </div>
           </div>
 
@@ -69,7 +69,7 @@
             </div>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
-              <input type="password" id="auth-pass" required placeholder="••••••••" class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+              <input type="password" id="auth-pass" required placeholder="••••••••" class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
             </div>
           </div>
 
@@ -78,9 +78,9 @@
           </button>
         </form>
 
-        <div class="mt-4 border-t pt-3 text-center text-[11px] text-slate-500 space-y-0.5">
-          <p>Admin: <span class="font-semibold text-slate-800">admin / admin123</span> (Full Control)</p>
-          <p>Teacher: <span class="font-semibold text-slate-800">teacher / teacher123</span> (Limited)</p>
+        <!-- Brand Footer -->
+        <div class="mt-6 border-t pt-3 text-center text-xs text-slate-600 font-semibold tracking-wide">
+          Development by <span class="text-emerald-800 font-bold">@Atiq Enterprise IT Ltd.</span>
         </div>
       </div>
 
@@ -192,7 +192,7 @@
             <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
                 <p class="text-xs text-slate-500 font-semibold uppercase">Total Cadets</p>
-                <h3 id="stat-cadets" class="text-2xl font-bold text-slate-900 mt-1">4</h3>
+                <h3 id="stat-cadets" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
               </div>
               <div class="w-11 h-11 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg">
                 <i class="fa-solid fa-user-graduate"></i>
@@ -201,7 +201,7 @@
             <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
                 <p class="text-xs text-slate-500 font-semibold uppercase">Today Attendance</p>
-                <h3 id="stat-att-rate" class="text-2xl font-bold text-emerald-600 mt-1">75%</h3>
+                <h3 id="stat-att-rate" class="text-2xl font-bold text-emerald-600 mt-1">0%</h3>
               </div>
               <div class="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg">
                 <i class="fa-solid fa-user-check"></i>
@@ -209,8 +209,8 @@
             </div>
             <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
-                <p class="text-xs text-slate-500 font-semibold uppercase">Total Billing Revenue</p>
-                <h3 id="stat-fees-collected" class="text-2xl font-bold text-amber-600 mt-1">৳ 3,000</h3>
+                <p class="text-xs text-slate-500 font-semibold uppercase">Total Revenue</p>
+                <h3 id="stat-fees-collected" class="text-2xl font-bold text-amber-600 mt-1">৳ 0</h3>
               </div>
               <div class="w-11 h-11 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg">
                 <i class="fa-solid fa-money-bill-wave"></i>
@@ -239,11 +239,11 @@
           </div>
         </section>
 
-        <!-- 2. CADETS / STUDENTS CRUD -->
+        <!-- 2. CADETS / STUDENTS CRUD (COMPREHENSIVE) -->
         <section id="view-students" class="hidden space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div class="flex items-center gap-2 w-full sm:w-auto">
-              <input type="text" id="cadet-search" oninput="renderStudentTable()" placeholder="Search cadet name, roll, phone..." class="text-xs border rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-emerald-700">
+              <input type="text" id="cadet-search" oninput="renderStudentTable()" placeholder="Search cadet, guardian, phone..." class="text-xs border rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-emerald-700">
               <button onclick="exportStudentsCSV()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-3 py-2 rounded-lg font-bold">
                 <i class="fa-solid fa-download"></i> CSV
               </button>
@@ -261,9 +261,10 @@
                     <th class="px-4 py-3">Cadet ID</th>
                     <th class="px-4 py-3">Full Name</th>
                     <th class="px-4 py-3">Class</th>
-                    <th class="px-4 py-3">Blood Group</th>
-                    <th class="px-4 py-3">Guardian Phone</th>
-                    <th class="px-4 py-3 text-center">Action</th>
+                    <th class="px-4 py-3">Main Guardian</th>
+                    <th class="px-4 py-3">Contact</th>
+                    <th class="px-4 py-3">Blood</th>
+                    <th class="px-4 py-3 text-center">Action Controls</th>
                   </tr>
                 </thead>
                 <tbody id="student-tbody" class="divide-y divide-slate-100"></tbody>
@@ -272,19 +273,35 @@
           </div>
         </section>
 
-        <!-- 3. ATTENDANCE -->
+        <!-- 3. ATTENDANCE (CLASS-WISE GRID & DIRECT FILTER) -->
         <section id="view-attendance" class="hidden space-y-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Parade & Daily Attendance Log</h3>
-              <p class="text-xs text-slate-500">Record attendance for today's drill</p>
+              <p class="text-xs text-slate-500">Record attendance for today's drill & auto-dispatch absent notices</p>
             </div>
             <button onclick="commitAttendance()" class="bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-emerald-800">
-              <i class="fa-solid fa-check-double"></i> Save Attendance
+              <i class="fa-solid fa-check-double"></i> Save Attendance & Notify Absent
             </button>
           </div>
 
+          <!-- Class-wise Attendance Metric Grid -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide">Class Attendance Breakdown (Click to Filter)</h4>
+              <button onclick="filterAttendanceClass('All')" class="text-[11px] text-emerald-700 hover:underline font-bold">Show All Classes</button>
+            </div>
+            <div id="class-attendance-cards" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2">
+              <!-- Dynamically populated classes -->
+            </div>
+          </div>
+
+          <!-- Attendance Cadet Table -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-3 bg-slate-50 border-b flex justify-between items-center text-xs">
+              <span class="font-bold text-slate-700" id="att-filter-label">Displaying: All Classes</span>
+              <span class="text-slate-500">Uncheck to mark Absent</span>
+            </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-100 uppercase font-bold text-slate-700 border-b">
@@ -292,7 +309,9 @@
                     <th class="px-4 py-3">Roll ID</th>
                     <th class="px-4 py-3">Cadet Name</th>
                     <th class="px-4 py-3">Class</th>
+                    <th class="px-4 py-3">Guardian</th>
                     <th class="px-4 py-3 text-center">Status</th>
+                    <th class="px-4 py-3 text-center">Absent Notice</th>
                   </tr>
                 </thead>
                 <tbody id="attendance-tbody" class="divide-y divide-slate-100"></tbody>
@@ -306,7 +325,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm text-xs">
               <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-2">Receive Student Fees</h4>
-              <p class="text-[11px] text-emerald-700 mb-3 font-semibold"><i class="fa-brands fa-whatsapp text-emerald-600"></i> Auto alert will be sent to WhatsApp (+8801689333000)</p>
+              <p class="text-[11px] text-emerald-700 mb-3 font-semibold"><i class="fa-brands fa-whatsapp text-emerald-600"></i> Auto alert sent to WhatsApp (+8801689333000)</p>
               
               <form id="billing-form" onsubmit="handleFeePayment(event)" class="space-y-3">
                 <div>
@@ -385,7 +404,7 @@
                   <i class="fa-solid fa-user-tie text-3xl text-slate-400"></i>
                 </div>
                 <h3 class="font-black text-base text-slate-900 mt-2" id="idcard-name">Cadet Name</h3>
-                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Grade 5</span>
+                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1" id="idcard-class">Class 5</span>
               </div>
 
               <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left text-xs space-y-1.5">
@@ -394,12 +413,16 @@
                   <span class="font-bold text-slate-800" id="idcard-id">#NS-101</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-slate-500">Blood Group:</span>
-                  <span class="font-bold text-red-600" id="idcard-blood">O+</span>
+                  <span class="text-slate-500">Father's Name:</span>
+                  <span class="font-bold text-slate-800" id="idcard-father">N/A</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-slate-500">Guardian Contact:</span>
-                  <span class="font-bold text-slate-800" id="idcard-phone">01742-955450</span>
+                  <span class="font-bold text-slate-800" id="idcard-phone">017XXXXXXXX</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Blood Group:</span>
+                  <span class="font-bold text-red-600" id="idcard-blood">O+</span>
                 </div>
               </div>
 
@@ -440,30 +463,36 @@
     </div>
   </div>
 
-  <!-- CADET ADD / EDIT MODAL -->
-  <div id="modal-cadet" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+  <!-- CADET ADD / EDIT MODAL (COMPREHENSIVE INFORMATION MODAL) -->
+  <div id="modal-cadet" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
         <h3 id="modal-cadet-title" class="font-bold text-slate-800 text-sm">Enroll New Cadet</h3>
         <button onclick="toggleModal('modal-cadet')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
       </div>
+
       <form id="cadet-form" onsubmit="handleCadetFormSubmit(event)" class="space-y-3 text-xs">
         <input type="hidden" id="edit-cadet-id">
+
+        <!-- Basic Info -->
         <div>
-          <label class="block font-semibold mb-1">Cadet Full Name</label>
+          <label class="block font-semibold mb-1">Cadet Full Name *</label>
           <input type="text" id="form-cadet-name" required class="w-full border rounded-lg p-2" placeholder="e.g. Shakib Al Hasan">
         </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block font-semibold mb-1">Class / Grade</label>
+            <label class="block font-semibold mb-1">Class / Grade *</label>
             <select id="form-cadet-class" class="w-full border rounded-lg p-2">
-              <option>Play</option>
-              <option>Nursery</option>
-              <option>Class 1</option>
-              <option>Class 2</option>
-              <option>Class 3</option>
-              <option>Class 4</option>
-              <option>Class 5</option>
+              <option value="Play">Play</option>
+              <option value="Nursery">Nursery</option>
+              <option value="Class 1">Class 1</option>
+              <option value="Class 2">Class 2</option>
+              <option value="Class 3">Class 3</option>
+              <option value="Class 4">Class 4</option>
+              <option value="Class 5">Class 5</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
             </select>
           </div>
           <div>
@@ -471,27 +500,89 @@
             <input type="text" id="form-cadet-blood" class="w-full border rounded-lg p-2" placeholder="e.g. B+">
           </div>
         </div>
-        <div>
-          <label class="block font-semibold mb-1">Guardian Phone (BD 11-Digit)</label>
-          <input type="tel" id="form-cadet-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
+
+        <!-- Parents & Guardian Details -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Father's Name</label>
+            <input type="text" id="form-cadet-father" class="w-full border rounded-lg p-2" placeholder="Father's full name">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Mother's Name</label>
+            <input type="text" id="form-cadet-mother" class="w-full border rounded-lg p-2" placeholder="Mother's full name">
+          </div>
         </div>
-        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-lg mt-2">
-          Save Cadet Record
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Main Guardian Name *</label>
+            <input type="text" id="form-cadet-guardian" required class="w-full border rounded-lg p-2" placeholder="Guardian name">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Guardian Phone (BD 11-Digit) *</label>
+            <input type="tel" id="form-cadet-phone" required class="w-full border rounded-lg p-2" placeholder="017XXXXXXXX">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Email Address</label>
+          <input type="email" id="form-cadet-email" class="w-full border rounded-lg p-2" placeholder="cadet@example.com">
+        </div>
+
+        <!-- Address -->
+        <div>
+          <label class="block font-semibold mb-1">Present Address</label>
+          <textarea id="form-cadet-present-address" rows="2" class="w-full border rounded-lg p-2" placeholder="Current address..."></textarea>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Permanent Address</label>
+          <textarea id="form-cadet-permanent-address" rows="2" class="w-full border rounded-lg p-2" placeholder="Permanent address / village home..."></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg mt-3 shadow">
+          Save Cadet Profile
         </button>
       </form>
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC -->
+  <!-- APPLICATION LOGIC WITH CENTRAL DATABASE STATE -->
   <script>
     const NOTIFICATION_WHATSAPP = "+8801689333000";
+    const CLASSES_LIST = ["Play", "Nursery", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7"];
 
+    // Default Seed Data
     const DEFAULT_DATA = {
       students: [
-        { id: 101, name: "Tanvir Ahmed", class: "Class 5", phone: "01742-955450", blood: "O+", present: true },
-        { id: 102, name: "Maria Sultana", class: "Class 4", phone: "01819-223344", blood: "A+", present: true },
-        { id: 103, name: "Rayhan Kabir", class: "Class 3", phone: "01912-334455", blood: "B+", present: false },
-        { id: 104, name: "Sadia Islam", class: "Class 2", phone: "01622-445566", blood: "AB+", present: true }
+        { 
+          id: 101, name: "Tanvir Ahmed", class: "Class 7", blood: "O+", 
+          father: "Abdul Alim", mother: "Rina Begum", guardian: "Abdul Alim", 
+          phone: "01742955450", email: "tanvir@cadet.bd",
+          presentAddress: "Rouha Bazar, Sarishabari", permanentAddress: "Sarishabari, Jamalpur",
+          present: true 
+        },
+        { 
+          id: 102, name: "Maria Sultana", class: "Class 6", blood: "A+", 
+          father: "Rafiqul Islam", mother: "Salma Khatun", guardian: "Rafiqul Islam", 
+          phone: "01819223344", email: "maria@cadet.bd",
+          presentAddress: "Shimla, Sarishabari", permanentAddress: "Sarishabari, Jamalpur",
+          present: true 
+        },
+        { 
+          id: 103, name: "Rayhan Kabir", class: "Class 5", blood: "B+", 
+          father: "Humayun Kabir", mother: "Nasima Akter", guardian: "Humayun Kabir", 
+          phone: "01912334455", email: "rayhan@cadet.bd",
+          presentAddress: "Rouha, Sarishabari", permanentAddress: "Sarishabari, Jamalpur",
+          present: false 
+        },
+        { 
+          id: 104, name: "Sadia Islam", class: "Class 4", blood: "AB+", 
+          father: "Sirajul Islam", mother: "Kohinoor Begum", guardian: "Sirajul Islam", 
+          phone: "01622445566", email: "sadia@cadet.bd",
+          presentAddress: "Sarishabari Sadar", permanentAddress: "Sarishabari, Jamalpur",
+          present: true 
+        }
       ],
       transactions: [
         { id: "TX1001", student: "Tanvir Ahmed", reason: "Monthly Tuition Fee", method: "bKash", amount: 1500, date: "2026-10-20" },
@@ -501,14 +592,25 @@
 
     let appState = JSON.parse(localStorage.getItem('north_south_db')) || DEFAULT_DATA;
     let currentUser = JSON.parse(localStorage.getItem('north_south_user')) || null;
+    let activeAttendanceClassFilter = "All";
     let analyticsChartInstance = null;
 
+    // Central State Persistence & Synchronized Trigger
     function saveState() {
       localStorage.setItem('north_south_db', JSON.stringify(appState));
-      updateDashboardStats();
+      refreshAllSystemViews();
     }
 
-    // Auth & Password Reset
+    function refreshAllSystemViews() {
+      updateDashboardStats();
+      renderStudentTable();
+      renderAttendanceView();
+      renderTransactions();
+      populateStudentDropdown();
+      if(analyticsChartInstance) initChart();
+    }
+
+    // Authentication Handlers
     function handleAuthLogin(e) {
       e.preventDefault();
       const u = document.getElementById('auth-user').value.trim();
@@ -537,7 +639,7 @@
     function handlePasswordReset(e) {
       e.preventDefault();
       const email = document.getElementById('reset-email').value;
-      alert(`Password reset instructions & secure PIN have been sent to: ${email}`);
+      alert(`Password reset instructions & secure PIN have been dispatched to: ${email}`);
       showResetBox(false);
     }
 
@@ -558,28 +660,20 @@
       const addBtn = document.getElementById('btn-add-cadet');
       if (addBtn) addBtn.style.display = isAdmin ? 'flex' : 'none';
 
-      renderStudentTable();
-      renderAttendanceTable();
-      renderTransactions();
-      populateStudentDropdown();
-      updateDashboardStats();
+      refreshAllSystemViews();
       initChart();
     }
 
-    // View Navigation (Both Desktop and Mobile)
+    // View Navigation
     function navigateView(viewName) {
       const views = ['dashboard', 'students', 'attendance', 'fees', 'idcards'];
       views.forEach(v => {
         document.getElementById(`view-${v}`).classList.add('hidden');
-        
-        // Desktop
         const b = document.getElementById(`nav-${v}`);
         if(b) {
           b.classList.remove('bg-emerald-800', 'text-white', 'font-semibold');
           b.classList.add('text-slate-300');
         }
-        
-        // Mobile
         const mob = document.getElementById(`mob-${v}`);
         if(mob) {
           mob.classList.remove('text-emerald-400', 'font-bold');
@@ -615,7 +709,7 @@
       document.getElementById(id).classList.toggle('hidden');
     }
 
-    // Cadet CRUD
+    // CADET CRUD CONTROLS
     function renderStudentTable() {
       const query = (document.getElementById('cadet-search')?.value || '').toLowerCase();
       const tbody = document.getElementById('student-tbody');
@@ -623,7 +717,10 @@
       const isAdmin = currentUser && currentUser.role === 'admin';
 
       const filtered = appState.students.filter(s => 
-        s.name.toLowerCase().includes(query) || s.id.toString().includes(query) || s.phone.includes(query)
+        s.name.toLowerCase().includes(query) || 
+        s.id.toString().includes(query) || 
+        s.phone.includes(query) ||
+        (s.guardian && s.guardian.toLowerCase().includes(query))
       );
 
       filtered.forEach(s => {
@@ -632,8 +729,9 @@
             <td class="px-4 py-3 font-bold text-slate-800">#NS-${s.id}</td>
             <td class="px-4 py-3 font-semibold text-slate-900">${s.name}</td>
             <td class="px-4 py-3"><span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold">${s.class}</span></td>
-            <td class="px-4 py-3 font-bold text-red-600">${s.blood}</td>
+            <td class="px-4 py-3 text-slate-700">${s.guardian || s.father || 'N/A'}</td>
             <td class="px-4 py-3">${s.phone}</td>
+            <td class="px-4 py-3 font-bold text-red-600">${s.blood}</td>
             <td class="px-4 py-3 text-center space-x-1 whitespace-nowrap">
               <button onclick="previewIDCard(${s.id})" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded" title="View ID">Card</button>
               ${isAdmin ? `
@@ -661,71 +759,116 @@
       document.getElementById('form-cadet-name').value = s.name;
       document.getElementById('form-cadet-class').value = s.class;
       document.getElementById('form-cadet-blood').value = s.blood;
+      document.getElementById('form-cadet-father').value = s.father || '';
+      document.getElementById('form-cadet-mother').value = s.mother || '';
+      document.getElementById('form-cadet-guardian').value = s.guardian || '';
       document.getElementById('form-cadet-phone').value = s.phone;
+      document.getElementById('form-cadet-email').value = s.email || '';
+      document.getElementById('form-cadet-present-address').value = s.presentAddress || '';
+      document.getElementById('form-cadet-permanent-address').value = s.permanentAddress || '';
       toggleModal('modal-cadet');
     }
 
     function deleteCadet(id) {
-      if (confirm(`Are you sure you want to delete Cadet #NS-${id}?`)) {
+      if (confirm(`Are you sure you want to delete Cadet #NS-${id}? The record will be permanently purged across the entire ERP.`)) {
         appState.students = appState.students.filter(s => s.id !== id);
         saveState();
-        renderStudentTable();
-        renderAttendanceTable();
-        populateStudentDropdown();
       }
     }
 
     function handleCadetFormSubmit(e) {
       e.preventDefault();
       const editId = document.getElementById('edit-cadet-id').value;
-      const name = document.getElementById('form-cadet-name').value;
-      const cadetClass = document.getElementById('form-cadet-class').value;
-      const blood = document.getElementById('form-cadet-blood').value || 'N/A';
-      const phone = document.getElementById('form-cadet-phone').value;
+      const data = {
+        name: document.getElementById('form-cadet-name').value,
+        class: document.getElementById('form-cadet-class').value,
+        blood: document.getElementById('form-cadet-blood').value || 'N/A',
+        father: document.getElementById('form-cadet-father').value,
+        mother: document.getElementById('form-cadet-mother').value,
+        guardian: document.getElementById('form-cadet-guardian').value,
+        phone: document.getElementById('form-cadet-phone').value,
+        email: document.getElementById('form-cadet-email').value,
+        presentAddress: document.getElementById('form-cadet-present-address').value,
+        permanentAddress: document.getElementById('form-cadet-permanent-address').value
+      };
 
       if (editId) {
         const target = appState.students.find(s => s.id == editId);
         if (target) {
-          target.name = name;
-          target.class = cadetClass;
-          target.blood = blood;
-          target.phone = phone;
+          Object.assign(target, data);
         }
       } else {
         const newId = 100 + appState.students.length + 1;
         appState.students.push({
           id: newId,
-          name: name,
-          class: cadetClass,
-          blood: blood,
-          phone: phone,
+          ...data,
           present: true
         });
       }
 
       saveState();
-      renderStudentTable();
-      renderAttendanceTable();
-      populateStudentDropdown();
       toggleModal('modal-cadet');
     }
 
-    // Attendance
-    function renderAttendanceTable() {
+    // ATTENDANCE WITH CLASS BREAKDOWN & AUTO DISPATCH
+    function renderAttendanceView() {
+      // 1. Render Breakdown Cards
+      const container = document.getElementById('class-attendance-cards');
+      container.innerHTML = '';
+
+      CLASSES_LIST.forEach(cls => {
+        const classCadets = appState.students.filter(s => s.class === cls);
+        const presentCount = classCadets.filter(s => s.present).length;
+        const total = classCadets.length;
+        const isSelected = activeAttendanceClassFilter === cls;
+
+        container.innerHTML += `
+          <button onclick="filterAttendanceClass('${cls}')" class="p-2 rounded-lg border text-center transition ${isSelected ? 'bg-emerald-800 text-white border-emerald-900 shadow' : 'bg-white hover:bg-slate-50 border-slate-200'}">
+            <span class="block text-[10px] font-bold truncate">${cls}</span>
+            <span class="text-sm font-black ${isSelected ? 'text-amber-300' : 'text-emerald-700'}">${presentCount}/${total}</span>
+          </button>
+        `;
+      });
+
+      // 2. Render Attendance Cadet List
       const tbody = document.getElementById('attendance-tbody');
       tbody.innerHTML = '';
-      appState.students.forEach(s => {
+      document.getElementById('att-filter-label').innerText = `Displaying: ${activeAttendanceClassFilter === 'All' ? 'All Classes' : activeAttendanceClassFilter}`;
+
+      const cadetsToShow = activeAttendanceClassFilter === 'All' 
+        ? appState.students 
+        : appState.students.filter(s => s.class === activeAttendanceClassFilter);
+
+      cadetsToShow.forEach(s => {
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50 border-b">
             <td class="px-4 py-3 font-bold">#NS-${s.id}</td>
             <td class="px-4 py-3 font-medium">${s.name}</td>
-            <td class="px-4 py-3">${s.class}</td>
+            <td class="px-4 py-3"><span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[11px] font-bold">${s.class}</span></td>
+            <td class="px-4 py-3 text-slate-600">${s.guardian || s.phone}</td>
             <td class="px-4 py-3 text-center">
               <input type="checkbox" onchange="togglePresent(${s.id})" ${s.present ? 'checked' : ''} class="w-4 h-4 text-emerald-600 rounded">
+            </td>
+            <td class="px-4 py-3 text-center">
+              ${!s.present ? `
+                <div class="inline-flex gap-1">
+                  <button onclick="sendAbsentNotice('${s.phone}', '${s.name}', '${s.class}', 'whatsapp')" class="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded font-bold flex items-center gap-1" title="Send WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i> WA
+                  </button>
+                  <button onclick="sendAbsentNotice('${s.phone}', '${s.name}', '${s.class}', 'sms')" class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-bold flex items-center gap-1" title="Send Mobile SMS">
+                    <i class="fa-solid fa-message"></i> SMS
+                  </button>
+                </div>
+              ` : `<span class="text-emerald-700 font-bold text-[11px]">Present</span>`}
             </td>
           </tr>
         `;
       });
+    }
+
+    function filterAttendanceClass(cls) {
+      activeAttendanceClassFilter = cls;
+      renderAttendanceView();
     }
 
     function togglePresent(id) {
@@ -734,16 +877,30 @@
       saveState();
     }
 
-    function commitAttendance() {
-      alert("Attendance Saved! Simulated Gateway SMS Dispatched to Guardians.");
+    function sendAbsentNotice(phone, name, cadetClass, channel) {
+      const formattedPhone = phone.startsWith('+88') ? phone : '+88' + phone.replace(/^0+/, '');
+      const message = `[North South Pre-Cadet Academy]\nNotice: Cadet ${name} (${cadetClass}) is ABSENT in today's parade/drill.\nPlease contact campus authority: +8801742-955450.`;
+
+      if(channel === 'whatsapp') {
+        const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+      } else {
+        const url = `sms:${formattedPhone}?body=${encodeURIComponent(message)}`;
+        window.location.href = url;
+      }
     }
 
-    // Fees & WhatsApp Alert
+    function commitAttendance() {
+      const absentCadets = appState.students.filter(s => !s.present);
+      alert(`Parade Attendance Saved Successfully!\nTotal Present: ${appState.students.length - absentCadets.length}\nTotal Absent: ${absentCadets.length}`);
+    }
+
+    // FEES & BILLING
     function populateStudentDropdown() {
       const sel = document.getElementById('bill-student');
       sel.innerHTML = '';
       appState.students.forEach(s => {
-        sel.innerHTML += `<option value="${s.name}">${s.name} (Class: ${s.class})</option>`;
+        sel.innerHTML += `<option value="${s.name}">${s.name} (${s.class})</option>`;
       });
     }
 
@@ -759,7 +916,6 @@
       const newTx = { id: txId, student: cadetName, reason: reason, method: method, amount: amount, date: date };
       appState.transactions.unshift(newTx);
       saveState();
-      renderTransactions();
       e.target.reset();
 
       const textMsg = encodeURIComponent(
@@ -796,7 +952,7 @@
       });
     }
 
-    // Stats
+    // STATS METRICS
     function updateDashboardStats() {
       const totalStudents = appState.students.length;
       const presentCount = appState.students.filter(s => s.present).length;
@@ -808,7 +964,7 @@
       document.getElementById('stat-fees-collected').innerText = `৳ ${totalRev.toLocaleString()}`;
     }
 
-    // Chart
+    // ANALYTICS CHART
     function initChart() {
       const ctx = document.getElementById('analyticsChart');
       if(!ctx) return;
@@ -843,29 +999,30 @@
       });
     }
 
-    // ID Card Preview
+    // ID CARD PREVIEW
     function previewIDCard(id) {
       const s = appState.students.find(item => item.id === id);
       if(!s) return;
       document.getElementById('idcard-name').innerText = s.name;
       document.getElementById('idcard-class').innerText = s.class;
       document.getElementById('idcard-id').innerText = `#NS-${s.id}`;
-      document.getElementById('idcard-blood').innerText = s.blood;
+      document.getElementById('idcard-father').innerText = s.father || 'N/A';
       document.getElementById('idcard-phone').innerText = s.phone;
+      document.getElementById('idcard-blood').innerText = s.blood;
       navigateView('idcards');
     }
 
-    // Export CSV
+    // EXPORT CSV
     function exportStudentsCSV() {
-      let csv = 'ID,Name,Class,BloodGroup,Phone\n';
+      let csv = 'ID,Name,Class,Blood,Father,Mother,Guardian,Phone,Email,PresentAddress,PermanentAddress\n';
       appState.students.forEach(s => {
-        csv += `${s.id},"${s.name}","${s.class}","${s.blood}","${s.phone}"\n`;
+        csv += `${s.id},"${s.name}","${s.class}","${s.blood}","${s.father || ''}","${s.mother || ''}","${s.guardian || ''}","${s.phone}","${s.email || ''}","${s.presentAddress || ''}","${s.permanentAddress || ''}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.setAttribute('href', url);
-      a.setAttribute('download', 'cadets_database.csv');
+      a.setAttribute('download', 'cadets_database_extended.csv');
       a.click();
     }
 
